@@ -29,8 +29,8 @@ return {
                 text = {
                     "#1#",
                     "{C:inactive}(when hand is played,",
-                    "{C:green}1 in 2{} {C:inactive}chance to eat",
-                    "{C:inactive}a random unscored card.", 
+                    "{C:green}#2# in #3#{} {C:inactive}chance to eat",
+                    "{C:inactive}a non-scoring card.", 
                     "{C:inactive}Scores all eaten cards)"
                 }
             }
