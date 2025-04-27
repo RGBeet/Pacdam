@@ -33,6 +33,12 @@ return {
                     "{C:inactive}a non-scoring card.", 
                     "{C:inactive}Scores all eaten cards)"
                 }
+            },
+            j_pow_PowFrog = {
+                name = "Frog of Power",
+                text = {
+                    "{C:green}+#1#{} Pow"
+                }
             }
         },
         Fish = {
