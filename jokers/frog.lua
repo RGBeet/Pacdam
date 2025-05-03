@@ -52,7 +52,7 @@ SMODS.Joker{
 
     calculate = function(self, card, context)
         if not context.blueprint and context.before and context.cardarea == G.jokers then
-            local override = true
+            local override = false
             if pseudorandom("Frog") < G.GAME.probabilities.normal / card.ability.extra.odds or override then
                 local unscored_cards = {}
                 for i=1, #context.full_hand do

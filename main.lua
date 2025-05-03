@@ -15,6 +15,11 @@ SMODS.Atlas{
     py = 95
 }
 
+SMODS.Sound{
+    key = "pow_hit",
+    path = "pow_hit.ogg"
+}
+
 local function requireFolder(path)
     local files = NFS.getDirectoryItemsInfo(SMODS.current_mod.path .. "/" .. path)
     for i = 1, #files do
@@ -42,7 +47,11 @@ end
 local update_hand_text_ref = update_hand_text
 function update_hand_text(config, vals)
     if not vals.pow then
-        vals.pow = 1
+        if pow then
+            vals.pow = pow
+        else
+            vals.pow = 1
+        end
     end
     update_hand_text_ref(config, vals)
 end
@@ -83,7 +92,7 @@ G.FUNCS.hand_pow_UI_set = function(e)
     local new_pow_text = number_format(G.GAME.current_round.current_hand.pow)
     if new_pow_text ~= G.GAME.current_round.current_hand.pow_text then 
         G.GAME.current_round.current_hand.pow_text = new_pow_text
-        e.config.object.scale = scale_number(G.GAME.current_round.current_hand.pow, 0.6, 1000)
+        e.config.object.scale = scale_number(G.GAME.current_round.current_hand.pow, 0.55, 1000)
         e.config.object:update_text()
         if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.pow) == 'number' and G.GAME.current_round.current_hand.pow or 1)))) end
     end
