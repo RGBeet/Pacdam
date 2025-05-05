@@ -1,6 +1,13 @@
 G.C.FISH = HEX("308fe3")
 G.C.TETHERED = HEX('248571')
 
+function calc_chips_pow(chips, mult, pow)
+    local sign = function (number)
+        return number > 0 and 1 or (number == 0 and 0 or -1)
+    end
+    return sign(chips)*(math.abs(chips)^pow)*mult
+end
+
 SMODS.Atlas{
     key = "Jokers",
     path = "Jokers.png",
@@ -106,4 +113,13 @@ G.FUNCS.flame_handler = function(e)
     G.C.UI_POWLICK[i] = math.min(math.max(((G.C.GREEN[i]*0.5+G.C.YELLOW[i]*0.5) + 0.1)^2, 0.1), 1)
   end
   return flame_handler_ref(e)
+end
+
+-- hook to fix scaling for negative numbers
+local scale_number_ref = scale_number
+scale_number = function(number, scale, max, e_switch_point)
+  if(number < 0) then
+    number = math.abs(number) * 10
+  end
+  return scale_number_ref(number, scale, max, e_switch_point)
 end

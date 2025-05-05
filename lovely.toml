@@ -54,7 +54,6 @@ payload = """
     pow_text = '1',
 """
 
-
 # Adds the card_eval_status_text under jokers that return a pow value
 [[patches]]
 [patches.pattern]
@@ -126,7 +125,7 @@ payload = """
 G.E_MANAGER:add_event(Event({
     trigger = 'after',delay = 0.4,
     func = function()  
-      update_hand_text({delay = 0, immediate = true}, {chips = hand_chips ^ pow, pow = 1, level = '', handname = ''})
+      update_hand_text({delay = 0, immediate = true}, {chips = calc_chips_pow(hand_chips, 1, pow), pow = 1, level = '', handname = ''})
       play_sound('button', 0.9, 0.6)
       G.E_MANAGER:add_event(Event({
         func = function() pow = 1;return true end
@@ -145,7 +144,7 @@ pattern = 'hand_chips\*mult'
 position = "at"
 overwrite = true
 match_indent = false
-payload = "hand_chips^pow*mult"
+payload = "calc_chips_pow(hand_chips, mult, pow)"
 
 
 # Sets pow to 1 if hand is debuffed
@@ -166,7 +165,29 @@ pattern = '''func = (function()  update_hand_text({delay = 0, immediate = true},
 position = "at"
 overwrite = true
 match_indent = true
-payload = '''func = (function()  update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 0, pow = 1, chip_total = math.floor(hand_chips^pow*mult), level = '', handname = ''});play_sound('button', 0.9, 0.6);return true end)'''
+payload = '''func = (function()  update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 0, pow = 1, chip_total = math.floor(calc_chips_pow(hand_chips, mult, pow)), level = '', handname = ''});play_sound('button', 0.9, 0.6);return true end)'''
+
+
+# Makes negative chips work
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.chips) == 'number' and G.GAME.current_round.current_hand.chips or 1)))) end'''
+position = "at"
+overwrite = true
+match_indent = true
+payload = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.chips) == 'number' and math.abs(G.GAME.current_round.current_hand.chips) or 1)))) end'''
+
+
+# Makes negative mult work
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.mult) == 'number' and G.GAME.current_round.current_hand.mult or 1)))) end'''
+position = "at"
+overwrite = true
+match_indent = true
+payload = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.mult) == 'number' and math.abs(G.GAME.current_round.current_hand.mult) or 1)))) end'''
 
 
 # Replaces calculation for flame instensity with one that accounts for pow
@@ -183,9 +204,8 @@ overwrite = true
 match_indent = true
 payload = """if type(G.GAME.current_round.current_hand.chips) ~= 'number' or type(G.GAME.current_round.current_hand.mult) ~= 'number' or type(G.GAME.current_round.current_hand.pow) ~= 'number' then
     G.ARGS.score_intensity.earned_score = 0
-    print(G.GAME.current_round.current_hand.pow)
   else
-    G.ARGS.score_intensity.earned_score = G.GAME.current_round.current_hand.chips^G.GAME.current_round.current_hand.pow*G.GAME.current_round.current_hand.mult
+    G.ARGS.score_intensity.earned_score = calc_chips_pow(G.GAME.current_round.current_hand.chips, G.GAME.current_round.current_hand.mult, G.GAME.current_round.current_hand.pow)
   end"""
 
 

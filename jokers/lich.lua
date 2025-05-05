@@ -2,7 +2,7 @@ SMODS.Joker{
     key = "Lich",
     rarity = 3,
     atlas = "Jokers",
-    pos = {x = 1, y = 0},
+    pos = {x = 6, y = 0},
     cost = 8,
     config = { extra = { lich_id = -1 } },
 

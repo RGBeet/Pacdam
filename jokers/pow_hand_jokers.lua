@@ -2,7 +2,7 @@ SMODS.Joker{
     key = "Hasty",
     rarity = 1,
     atlas = "Jokers",
-    pos = {x = 0, y = 1},
+    pos = {x = 0, y = 0},
     cost = 4,
     config = { extra = { pow = 0.05 } },
 
@@ -25,7 +25,7 @@ SMODS.Joker{
     key = "Eager",
     rarity = 1,
     atlas = "Jokers",
-    pos = {x = 1, y = 1},
+    pos = {x = 1, y = 0},
     cost = 4,
     config = { extra = { pow = 0.1 } },
 
@@ -48,7 +48,7 @@ SMODS.Joker{
     key = "Restless",
     rarity = 1,
     atlas = "Jokers",
-    pos = {x = 2, y = 1},
+    pos = {x = 2, y = 0},
     cost = 4,
     config = { extra = { pow = 0.08 } },
 
@@ -71,7 +71,7 @@ SMODS.Joker{
     key = "Frantic",
     rarity = 1,
     atlas = "Jokers",
-    pos = {x = 3, y = 1},
+    pos = {x = 3, y = 0},
     cost = 4,
     config = { extra = { pow = 0.1 } },
 
@@ -94,7 +94,7 @@ SMODS.Joker{
     key = "Manic",
     rarity = 1,
     atlas = "Jokers",
-    pos = {x = 4, y = 1},
+    pos = {x = 4, y = 0},
     cost = 4,
     config = { extra = { pow = 0.08 } },
 

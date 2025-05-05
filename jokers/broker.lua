@@ -6,7 +6,7 @@ SMODS.Joker{
     key = "Broker",
     rarity = 2,
     atlas = "Jokers",
-    pos = {x = 3, y = 0},
+    pos = {x = 8, y = 0},
     cost = 6,
     config = { extra = { powrate = 0.02, dollarrate = 5 } },
 

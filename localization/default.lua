@@ -41,6 +41,14 @@ return {
                     "a {C:attention}Flush{}"
                 }
             },
+            j_pow_Blackjack = {
+                name = "Blackjack",
+                text = {
+                    "{C:green}+#1#{} Pow if ranks",
+                    "of played cards",
+                    "sum to {C:attention}21{}"
+                }
+            },
             j_pow_Fisherman = {
                 name = "Fisherman",
                 text = {
@@ -84,10 +92,26 @@ return {
                     "when scored"
                 }
             },
-            j_pow_reverse = {
+            j_pow_Reverse = {
                 name = "Reverse",
                 text = {
                     "Swaps {C:chips}Chips{} and {C:mult}Mult{}"
+                },
+            },
+            j_pow_Joku = {
+                name = "Joku",
+                text = {
+                    "This joker gains {C:green}+#1#{} Pow",
+                    "per {C:attention}consecutive{} hand that",
+                    "exceeds required chips",
+                    "{C:inactive}(Currently {C:green}+#2#{} {C:inactive}Pow)"
+                },
+            },
+            j_pow_BigBluff = {
+                name = "Big Bluff",
+                text = {
+                    "{C:green}+#1#{} Pow, {C:red}-#2#{} Mult",
+                    "Start with {C:attention}one hand{}"
                 },
             },
         },

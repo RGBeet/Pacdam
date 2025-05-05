@@ -1,8 +1,8 @@
 SMODS.Joker{
-    key = "reverse",
+    key = "Reverse",
     rarity = 1,
     atlas = "Jokers",
-    pos = {x = 0, y = 2},
+    pos = {x = 0, y = 1},
     cost = 4,
     blueprint_compat = true,
 

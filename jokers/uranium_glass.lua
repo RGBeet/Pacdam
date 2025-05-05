@@ -2,7 +2,7 @@ SMODS.Joker{
     key = "Uranium",
     rarity = 2,
     atlas = "Jokers",
-    pos = {x = 4, y = 0},
+    pos = {x = 9, y = 0},
     cost = 6,
     config = { extra = { pow = 0.1 } },
 

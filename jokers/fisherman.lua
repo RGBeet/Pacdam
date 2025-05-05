@@ -2,7 +2,7 @@ SMODS.Joker{
     key = "Fisherman",
     rarity = 2,
     atlas = "Jokers",
-    pos = {x = 0, y = 0},
+    pos = {x = 5, y = 0},
     cost = 6,
     blueprint_compat = true,
 
@@ -26,7 +26,7 @@ SMODS.Joker{
                 fish.children.center:set_sprite_pos({ x = num_fish-1, y = 0 })
                 fish:juice_up()
 
-                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Caught one!", colour = G.C.attention })
+                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Caught one!", colour = G.C.FILTER })
             elseif #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
                 
@@ -45,7 +45,7 @@ SMODS.Joker{
                         return true
                     end)}))
 
-                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Caught one!", colour = G.C.attention })
+                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Caught one!", colour = G.C.FILTER })
             end
         end
     end
