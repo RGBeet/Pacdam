@@ -147,6 +147,46 @@ match_indent = false
 payload = "calc_chips_pow(hand_chips, mult, pow)"
 
 
+# Adds support for pow on playing cards
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''-- TARGET: main scoring on played cards'''
+position = "before"
+match_indent = true
+payload = """
+local pow = card:get_pow_bonus()
+if pow ~= 0 then
+    ret.playing_card.pow = pow
+end
+
+"""
+
+
+# Adds pow to playing card loc_vars
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''bonus_h_chips = self.ability.perma_h_chips ~= 0 and self.ability.perma_h_chips or nil,'''
+position = "before"
+match_indent = true
+payload = """bonus_pow = self.ability.perma_pow ~= 0 and self.ability.perma_pow or nil,"""
+
+
+# Adds pow to playing card UIBox
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''if specific_vars and specific_vars.bonus_h_chips then'''
+position = "before"
+match_indent = true
+payload = """
+if specific_vars and specific_vars.bonus_pow then
+    localize{type = 'other', key = 'card_pow', nodes = desc_nodes, vars = {specific_vars.bonus_pow}}
+end
+"""
+
+
 # Sets pow to 1 if hand is debuffed
 [[patches]]
 [patches.pattern]

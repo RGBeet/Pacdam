@@ -114,6 +114,15 @@ return {
                     "Start with {C:attention}one hand{}"
                 },
             },
+            j_pow_Biker = {
+                name = "Biker",
+                text = {
+                    "Every played {C:attention}card",
+                    "permanently gains",
+                    "{C:green}+#1#{} Pow, {C:red}-#2#{} Mult",
+                    "when scored"
+                },
+            },
         },
         Fish = {
             c_pow_Fish = {
@@ -124,6 +133,11 @@ return {
             }
         },
         Other = {
+            card_pow = {
+                text = {
+                    "{C:green}+#1#{} Pow"
+                }
+            },
             pow_tethered = {
                 name = "Tethered",
                 text = {

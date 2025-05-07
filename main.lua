@@ -123,3 +123,7 @@ scale_number = function(number, scale, max, e_switch_point)
   end
   return scale_number_ref(number, scale, max, e_switch_point)
 end
+
+Card.get_pow_bonus = function (self)
+    return self.ability.perma_pow and self.ability.perma_pow or 0
+end
