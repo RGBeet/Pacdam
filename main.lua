@@ -52,6 +52,7 @@ assert(SMODS.load_file("jokers/joku.lua"))()
 assert(SMODS.load_file("jokers/uranium_glass.lua"))()
 assert(SMODS.load_file("jokers/blackjack.lua"))()
 assert(SMODS.load_file("jokers/biker.lua"))()
+assert(SMODS.load_file("jokers/chameleon.lua"))()
 
 -------------------------------------
 --------------- POW -----------------

@@ -39,7 +39,7 @@ SMODS.Joker{
         if context.joker_main then
             return { pow = card.ability.extra.pow_bonus }
         end
-        if context.after and context.cardarea == G.jokers then
+        if not context.blueprint and context.after and context.cardarea == G.jokers then
             if hand_chips^pow*mult > G.GAME.blind.chips then
                 card.ability.extra.pow_bonus = card.ability.extra.pow_bonus + card.ability.extra.pow_rate
                 card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Power Up!", colour = G.C.GREEN })

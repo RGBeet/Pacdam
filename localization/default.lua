@@ -123,6 +123,14 @@ return {
                     "when scored"
                 },
             },
+            j_pow_Chameleon = {
+                name = "Chameleon",
+                text = {
+                    "Each {C:attention}Wild Card",
+                    "held in hand",
+                    "gives {C:green}+#1#{} Pow",
+                },
+            },
         },
         Fish = {
             c_pow_Fish = {
