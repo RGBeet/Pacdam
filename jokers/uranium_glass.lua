@@ -4,7 +4,7 @@ SMODS.Joker{
     atlas = "Jokers",
     pos = {x = 9, y = 0},
     cost = 6,
-    config = { extra = { pow = 0.1 } },
+    config = { extra = { pow = 0.05 } },
 
     loc_vars = function(self, info_queue, card)
         return {

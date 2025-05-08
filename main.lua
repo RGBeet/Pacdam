@@ -27,17 +27,31 @@ SMODS.Sound{
     path = "pow_hit.ogg"
 }
 
-local function requireFolder(path)
-    local files = NFS.getDirectoryItemsInfo(SMODS.current_mod.path .. "/" .. path)
-    for i = 1, #files do
-        local file_name = files[i].name
-        if file_name:sub(-4) == ".lua" then
-            assert(SMODS.load_file(path .. file_name))()
-        end
-    end
-end
+-- I like this method of loading but I'm picky about the collection ordering so I have to load file by file
 
-requireFolder("jokers/")
+-- local function requireFolder(path)
+--     local files = NFS.getDirectoryItemsInfo(SMODS.current_mod.path .. "/" .. path)
+--     for i = 1, #files do
+--         local file_name = files[i].name
+--         if file_name:sub(-4) == ".lua" then
+--             assert(SMODS.load_file(path .. file_name))()
+--         end
+--     end
+-- end
+
+-- requireFolder("jokers/")
+
+assert(SMODS.load_file("jokers/pow_hand_jokers.lua"))()
+assert(SMODS.load_file("jokers/reverse.lua"))()
+assert(SMODS.load_file("jokers/fisherman.lua"))()
+assert(SMODS.load_file("jokers/lich.lua"))()
+assert(SMODS.load_file("jokers/frog.lua"))()
+assert(SMODS.load_file("jokers/broker.lua"))()
+assert(SMODS.load_file("jokers/big_bluff.lua"))()
+assert(SMODS.load_file("jokers/joku.lua"))()
+assert(SMODS.load_file("jokers/uranium_glass.lua"))()
+assert(SMODS.load_file("jokers/blackjack.lua"))()
+assert(SMODS.load_file("jokers/biker.lua"))()
 
 -------------------------------------
 --------------- POW -----------------

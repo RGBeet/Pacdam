@@ -128,7 +128,8 @@ return {
             c_pow_Fish = {
                 name = "Fish",
                 text = {
-                    "Draw a card"
+                    "Draw a card",
+                    "{C:inactive}Currently #1#/#2# Fish{}"
                 },
             }
         },

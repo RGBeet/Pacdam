@@ -3,10 +3,10 @@ local animation_frames = {{ x = 3, y = 1 }, { x = 4, y = 1 }}
 
 SMODS.Joker{
     key = "Joku",
-    rarity = 2,
+    rarity = 3,
     atlas = "Jokers",
     pos = default_sprite_pos,
-    cost = 6,
+    cost = 8,
     config = { extra = { pow_bonus = 0, pow_rate = 0.1, animate = false } },
 
     update = function(self, card, dt)
