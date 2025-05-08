@@ -122,18 +122,21 @@ G.E_MANAGER:add_event(Event({
 position = "before"
 match_indent = true
 payload = """
-G.E_MANAGER:add_event(Event({
-    trigger = 'after',delay = 0.4,
-    func = function()  
-      update_hand_text({delay = 0, immediate = true}, {chips = calc_chips_pow(hand_chips, 1, pow), pow = 1, level = '', handname = ''})
-      play_sound('button', 0.9, 0.6)
-      G.E_MANAGER:add_event(Event({
-        func = function() pow = 1;return true end
-      }))
-      return true 
-    end
-  }))
-delay(1)"""
+if pow ~= 1 then
+  G.E_MANAGER:add_event(Event({
+      trigger = 'after',delay = 0.4,
+      func = function()  
+        update_hand_text({delay = 0, immediate = true}, {chips = calc_chips_pow(hand_chips, 1, pow), pow = 1, level = '', handname = ''})
+        play_sound('button', 0.9, 0.6)
+        G.E_MANAGER:add_event(Event({
+          func = function() pow = 1;return true end
+        }))
+        return true 
+      end
+    }))
+  delay(1)
+end
+"""
 
 
 # Replaces final hand calculations in evaluate play with one that accounts for pow

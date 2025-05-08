@@ -133,7 +133,7 @@ end
 -- hook to fix scaling for negative numbers
 local scale_number_ref = scale_number
 scale_number = function(number, scale, max, e_switch_point)
-  if(number < 0) then
+  if type(number) == "number" and number < 0 then
     number = math.abs(number) * 10
   end
   return scale_number_ref(number, scale, max, e_switch_point)
