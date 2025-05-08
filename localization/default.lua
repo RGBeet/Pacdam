@@ -137,7 +137,7 @@ return {
                 name = "Fish",
                 text = {
                     "Draw a card",
-                    "{C:inactive}Currently #1#/#2# Fish{}"
+                    "{C:inactive}(Currently #1#/#2# Fish){}"
                 },
             }
         },

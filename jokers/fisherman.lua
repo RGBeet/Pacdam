@@ -63,10 +63,12 @@ SMODS.Consumable{
     atlas = "Extras",
     pos = {x = 0, y = 0},
     no_collection = true,
-    config = { extra = { num_fish = 1, max_fish = 5 } },
+    config = { extra = { num_fish = 0, max_fish = 5 } },
 
     loc_vars = function (self, info_queue, card)
-        return { card.ability.extra.num_fish, card.ability.extra.max_fish }
+        return { 
+            vars = { card.ability.extra.num_fish, card.ability.extra.max_fish }
+        }
     end,
 
     add_to_deck = function (self, card, from_debuff)
