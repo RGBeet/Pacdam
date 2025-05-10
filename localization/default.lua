@@ -1,5 +1,13 @@
 return {
     descriptions = {
+        Edition = {
+            e_pow_Glow = {
+                name = "Glow in the Dark",
+                text = {
+                    "Gives {C:green}+#1#{} Pow"
+                }
+            }
+        },
         Joker = {
             j_pow_Hasty = {
                 name = "Hasty Joker",
@@ -165,7 +173,8 @@ return {
             b_fish_cards = "Fish Cards",
         },
         labels = {
-            pow_tethered = "Tethered"
+            pow_tethered = "Tethered",
+            pow_Glow = "Glow in the Dark"
         },
         v_dictionary={
             a_pow="+#1# Pow",

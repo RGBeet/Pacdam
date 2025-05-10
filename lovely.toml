@@ -65,7 +65,7 @@ position = "before"
 match_indent = true
 payload = """
 elseif (eval_type == 'pow') or (eval_type == 'h_pow') then 
-    sound = 'pow_hit'--'other1'
+    sound = 'pow_hit'
     amt = amt
     text = localize{type='variable',key='a_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
     colour = G.C.GREEN
