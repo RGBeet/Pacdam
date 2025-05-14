@@ -8,6 +8,15 @@ return {
                 }
             }
         },
+        Fish = {
+            c_pow_Fish = {
+                name = "Fish",
+                text = {
+                    "Draw a card",
+                    "{C:inactive}(Currently #1#/#2# Fish){}"
+                },
+            }
+        },
         Joker = {
             j_pow_Hasty = {
                 name = "Hasty Joker",
@@ -140,19 +149,15 @@ return {
                 },
             },
         },
-        Fish = {
-            c_pow_Fish = {
-                name = "Fish",
-                text = {
-                    "Draw a card",
-                    "{C:inactive}(Currently #1#/#2# Fish){}"
-                },
-            }
-        },
         Other = {
             card_pow = {
                 text = {
                     "{C:green}+#1#{} Pow"
+                }
+            },
+            card_decay = {
+                text = {
+                    "{X:green,C:white}-#1#{} Pow"
                 }
             },
             pow_tethered = {
@@ -163,6 +168,24 @@ return {
                     "{V:1}Tethered{} and becomes",
                     "Debuffed if {C:attention}Lich{}",
                     "is sold or destroyed."
+                }
+            }
+        },
+        Spectral = {
+            c_pow_geist = {
+                name = "Geist",
+                text = {
+                    "Apply {C:dark_edition}#1#{}",
+                    "effect to {C:attention}1{} selected",
+                    "card in hand"
+                }
+            }
+        },
+        Stake = {
+            stake_green = {
+                name = "Green Stake",
+                text = {
+                    "All jokers {X:green,C:white}Decay{} at the end of each round"
                 }
             }
         }
@@ -179,6 +202,7 @@ return {
         v_dictionary={
             a_pow="+#1# Pow",
             a_pow_minus="-#1# Pow",
+            a_decay = "Decay #1#",
         }
     }
 }

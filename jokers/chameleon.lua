@@ -14,7 +14,7 @@ SMODS.Joker{
     end,
 
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.hand and SMODS.has_enhancement(context.other_card, "m_wild") then
+        if context.individual and context.cardarea == G.hand and not context.end_of_round and not context.other_card.debuff and SMODS.has_enhancement(context.other_card, "m_wild") then
             return {
                 pow = card.ability.extra.pow,
                 card = context.other_card,

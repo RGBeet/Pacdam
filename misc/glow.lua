@@ -1,6 +1,9 @@
 -- SMODS.Shader({ key = 'glowdark', path = 'glowdark.fs' })
 -- SMODS.Shader({ key = 'glowbloom', path = 'glowbloom.fs' })
-SMODS.Shader({ key = 'glow', path = 'glow.fs' })
+SMODS.Shader{ 
+    key = 'glow', 
+    path = 'glow.fs'
+}
 
 -- SMODS.DrawStep {
 --     key = 'bloom',
@@ -16,7 +19,10 @@ SMODS.Shader({ key = 'glow', path = 'glow.fs' })
 SMODS.Edition{
     key = "Glow",
     shader = "glow",
-    config = { pow = 0.5 },
+    config = { pow = 0.3 },
+    in_shop = true,
+    weight = 1,
+    extra_cost = 2,
 
     loc_vars = function (self, info_queue, card)
         return {
@@ -37,6 +43,10 @@ SMODS.Edition{
         end
     end,
 
+    get_weight = function(self)
+        return G.GAME.edition_rate * self.weight
+    end,
+
     -- draw = function (self, card, layer)
     --     if (card.edition and card.edition.pow_Glow) then
     --         card.children.center:draw_shader("pow_glowdark", nil, card.ARGS.send_to_shader)
@@ -47,4 +57,33 @@ SMODS.Edition{
     --         end
     --     end
     -- end
+}
+
+SMODS.Consumable{
+    key = "geist",
+    set = "Spectral",
+    atlas = "Extras",
+    pos = { x=2, y=1 },
+    cost = 4,
+
+    loc_vars = function (self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS.e_pow_Glow
+        return {
+            vars = {
+                G.localization.descriptions["Edition"]["e_pow_Glow"].name
+            }
+        }
+    end,
+
+    can_use = function (self, card)
+        return #G.hand.highlighted == 1
+    end,
+
+    use = function (self, card, area, copier)
+        G.E_MANAGER:add_event(Event({
+            func = function ()
+                G.hand.highlighted[1]:set_edition("e_pow_Glow")
+            end
+        }))
+    end
 }

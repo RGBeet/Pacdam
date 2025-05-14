@@ -54,7 +54,7 @@ payload = """
     pow_text = '1',
 """
 
-# Adds the card_eval_status_text under jokers that return a pow value
+# Adds the card_eval_status_text under jokers that return a pow or decay value
 [[patches]]
 [patches.pattern]
 target = "functions/common_events.lua"
@@ -66,6 +66,13 @@ match_indent = true
 payload = """
 elseif (eval_type == 'pow') or (eval_type == 'h_pow') then 
     sound = 'pow_hit'
+    amt = amt
+    text = localize{type='variable',key='a_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
+    colour = G.C.GREEN
+    config.type = 'fade'
+    config.scale = 0.7
+elseif (eval_type == 'pow_decay') then 
+    sound = 'cancel'
     amt = amt
     text = localize{type='variable',key='a_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
     colour = G.C.GREEN

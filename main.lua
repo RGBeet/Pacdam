@@ -62,7 +62,7 @@ assert(SMODS.load_file("jokers/chameleon.lua"))()
 local evaluate_play_ref = G.FUNCS.evaluate_play
 G.FUNCS.evaluate_play = function(e)
     pow = 1
-    evaluate_play_ref(e)
+    return evaluate_play_ref(e)
 end
 
 -- hook for setting the pow text value to 1 when there is no pow key
@@ -75,13 +75,13 @@ function update_hand_text(config, vals)
             vals.pow = 1
         end
     end
-    update_hand_text_ref(config, vals)
+    return update_hand_text_ref(config, vals)
 end
 
 -- hook for allowing jokers to return pow in their calculate functions
 local calculate_individual_effect_ref = SMODS.calculate_individual_effect
 SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, from_edition)
-    if (key == 'pow' or key == 'h_pow' or key == 'pow_mod') and amount then
+    if (key == 'pow' or key == 'h_pow' or key == 'pow_mod' or key == 'pow_decay') and amount then
         if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
         pow = pow + amount
         update_hand_text({delay = 0}, {chips = hand_chips, mult = mult, pow = pow})
@@ -100,18 +100,56 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
         end
         return true
     end
-    calculate_individual_effect_ref(effect, scored_card, key, amount, from_edition)
+    return calculate_individual_effect_ref(effect, scored_card, key, amount, from_edition)
 end
 
 -- inserts the keys required to allow jokers to return pow in their calculate functions
 table.insert(SMODS.calculation_keys, "pow")
 table.insert(SMODS.calculation_keys, "h_pow")
 table.insert(SMODS.calculation_keys, "pow_mod")
+table.insert(SMODS.calculation_keys, "pow_decay")
+
+
+-- custom number formatting for additional decimal places
+local pow_number_format = function(num, e_switch_point)
+    if type(num) ~= 'number' then return num end
+
+    local sign = (num >= 0 and "") or "-"
+    num = math.abs(num)
+    G.E_SWITCH_POINT = G.E_SWITCH_POINT or 100000000000
+    if not num or type(num) ~= 'number' then return num or '' end
+    if num >= (e_switch_point or G.E_SWITCH_POINT) then
+    local x = string.format("%.4g",num)
+    local fac = math.floor(math.log(tonumber(x), 10))
+    if num == math.huge then
+        return sign.."naneinf"
+    end
+    
+    local mantissa = round_number(x/(10^fac), 3)
+    if mantissa >= 10 then
+        mantissa = mantissa / 10
+        fac = fac + 1
+    end
+    return sign..(string.format(fac >= 100 and "%.1fe%i" or fac >= 10 and "%.2fe%i" or "%.3fe%i", mantissa, fac))
+    end
+    local formatted
+    if num ~= math.floor(num) and num < 100 then
+        formatted = string.format("%.3f", num)
+        if formatted:sub(-1) == "0" then
+            formatted = formatted:gsub("%.?0+$", "")
+        end
+        -- Return already to avoid comas being added
+        if num < 0.01 then return tostring(num) end
+    else 
+        formatted = string.format("%.0f", num)
+    end
+    return sign..(formatted:reverse():gsub("(%d%d%d)", "%1,"):gsub(",$", ""):reverse())
+end
 
 
 -- function for updating the pow text
 G.FUNCS.hand_pow_UI_set = function(e)
-    local new_pow_text = number_format(G.GAME.current_round.current_hand.pow)
+    local new_pow_text = pow_number_format(G.GAME.current_round.current_hand.pow)
     if new_pow_text ~= G.GAME.current_round.current_hand.pow_text then 
         G.GAME.current_round.current_hand.pow_text = new_pow_text
         e.config.object.scale = scale_number(G.GAME.current_round.current_hand.pow, 0.55, 1000)
@@ -119,6 +157,7 @@ G.FUNCS.hand_pow_UI_set = function(e)
         if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.pow) == 'number' and G.GAME.current_round.current_hand.pow or 1)))) end
     end
 end
+
 
 -- hook for the flames on the pow box
 local flame_handler_ref = G.FUNCS.flame_handler
@@ -139,6 +178,28 @@ scale_number = function(number, scale, max, e_switch_point)
   return scale_number_ref(number, scale, max, e_switch_point)
 end
 
+-- hook for jokers to apply decay
+local calculate_joker_ref = Card.calculate_joker
+function Card:calculate_joker(context)
+    local effect = calculate_joker_ref(self, context)
+    if context.joker_main and self.ability.pow_decay then
+        effect = effect or {}
+        effect.pow_decay = -math.abs(self.ability.pow_decay)
+    end
+    return effect
+end
+
+-- hook for decay to show up on joker ui
+local generate_card_ui_ref = generate_card_ui
+generate_card_ui = function(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
+    local ret = generate_card_ui_ref(_c, full_UI_table, specific_vars, card_type, badges, hide_desc, main_start, main_end, card)
+    if _c and _c.set and _c.set == "Joker" and card and card.ability and card.ability.pow_decay and ret then
+        localize{type = 'other', key = 'card_decay', nodes = ret.main, vars = {math.abs(card.ability.pow_decay)}}
+    end
+    return ret
+end
+
+-- function to get perma_pow from playing_cards
 Card.get_pow_bonus = function (self)
     return self.ability.perma_pow and self.ability.perma_pow or 0
 end
