@@ -83,6 +83,7 @@ SMODS.Consumable{
         G.E_MANAGER:add_event(Event({
             func = function ()
                 G.hand.highlighted[1]:set_edition("e_pow_Glow")
+                return true
             end
         }))
     end

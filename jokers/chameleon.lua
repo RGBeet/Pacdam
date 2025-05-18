@@ -1,9 +1,9 @@
 SMODS.Joker{
     key = "Chameleon",
-    rarity = 2,
+    rarity = 3,
     atlas = "Jokers",
     pos = {x = 7, y = 1},
-    cost = 6,
+    cost = 8,
     config = { extra = { pow = 0.1 } },
 
     loc_vars = function(self, info_queue, card)

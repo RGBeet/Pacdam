@@ -32,10 +32,10 @@ end
 
 SMODS.Joker{
     key = "Frog",
-    rarity = 3,
+    rarity = 2,
     atlas = "Jokers",
     pos = {x = 7, y = 0},
-    cost = 8,
+    cost = 6,
     config = { extra = { ribbit = "Ribbit.", odds = 4, cardarea_behind = true } },
 
     loc_vars = function(self, info_queue, card)

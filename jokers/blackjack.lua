@@ -17,8 +17,6 @@ SMODS.Joker{
             local sum = 0
             for i,v in ipairs(G.play.cards) do
                 if not SMODS.has_no_rank(v) then
-                    print(v.base.nominal)
-                    print(v:get_id())
                     sum = sum + v.base.nominal
                 end
             end

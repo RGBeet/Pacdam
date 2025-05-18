@@ -1,12 +1,6 @@
-G.C.FISH = HEX("308fe3")
-G.C.TETHERED = HEX('248571')
-
-function calc_chips_pow(chips, mult, pow)
-    local sign = function (number)
-        return number > 0 and 1 or (number == 0 and 0 or -1)
-    end
-    return sign(chips)*(math.abs(chips)^pow)*mult
-end
+-------------------------------------
+--------- ATLASES & SOUNDS ----------
+-------------------------------------
 
 SMODS.Atlas{
     key = "Jokers",
@@ -27,8 +21,88 @@ SMODS.Sound{
     path = "pow_hit.ogg"
 }
 
--- This method of loading would work for jokers too but I'm picky about collection order
+-------------------------------------
+-------- HELPERS & CONSTANTS --------
+-------------------------------------
 
+G.C.FISH = HEX("308fe3")
+G.C.TETHERED = HEX('248571')
+
+POW = {}
+function POW.calc_chips(chips, mult, pow)
+    local sign = function (number)
+        return number > 0 and 1 or (number == 0 and 0 or -1)
+    end
+    return sign(chips)*(math.abs(chips)^pow)*mult
+end
+
+function POW.get_most_played_poker_hand()
+    local _handname, _played, _order = 'High Card', -1, 100
+    for k, v in pairs(G.GAME.hands) do
+        if v.played > _played or (v.played == _played and _order > v.order) then 
+            _played = v.played
+            _handname = k
+        end
+    end
+    return _handname
+end
+
+function POW.flip_helper(source, targets, func)
+    if source then
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                source:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+    end
+    for i = 1, #targets do
+        local percent = 1.15 - (i - 0.999) / (#targets - 0.998) * 0.3
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.15,
+            func = function()
+                targets[i]:flip(); play_sound('card1', percent); targets[i]:juice_up(0.3, 0.3); return true
+            end
+        }))
+    end
+    delay(0.2)
+    for i = 1, #targets do
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.1,
+            func = func
+        }))
+    end
+    for i = 1, #targets do
+        local percent = 0.85 + (i - 0.999) / (#targets - 0.998) * 0.3
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.15,
+            func = function()
+                targets[i]:flip()
+                play_sound('tarot2', percent, 0.6)
+                targets[i]:juice_up(0.3, 0.3)
+                return true
+            end
+        }))
+    end
+    G.E_MANAGER:add_event(Event({
+        trigger = 'after',
+        delay = 0.2,
+        func = function()
+            G.hand:unhighlight_all()
+            return true
+        end
+    }))
+    delay(0.5)
+end
+
+
+-- This method of loading would work for jokers too but I'm picky about collection order
 local function requireFolder(path)
     local files = NFS.getDirectoryItemsInfo(SMODS.current_mod.path .. "/" .. path)
     for i = 1, #files do
@@ -39,8 +113,10 @@ local function requireFolder(path)
     end
 end
 
+-- Load Misc
 requireFolder("misc/")
 
+-- Load Jokers
 assert(SMODS.load_file("jokers/pow_hand_jokers.lua"))()
 assert(SMODS.load_file("jokers/reverse.lua"))()
 assert(SMODS.load_file("jokers/fisherman.lua"))()
@@ -53,6 +129,8 @@ assert(SMODS.load_file("jokers/uranium_glass.lua"))()
 assert(SMODS.load_file("jokers/blackjack.lua"))()
 assert(SMODS.load_file("jokers/biker.lua"))()
 assert(SMODS.load_file("jokers/chameleon.lua"))()
+assert(SMODS.load_file("jokers/superhero.lua"))()
+
 
 -------------------------------------
 --------------- POW -----------------
@@ -119,27 +197,27 @@ local pow_number_format = function(num, e_switch_point)
     G.E_SWITCH_POINT = G.E_SWITCH_POINT or 100000000000
     if not num or type(num) ~= 'number' then return num or '' end
     if num >= (e_switch_point or G.E_SWITCH_POINT) then
-    local x = string.format("%.4g",num)
-    local fac = math.floor(math.log(tonumber(x), 10))
-    if num == math.huge then
-        return sign.."naneinf"
-    end
-    
-    local mantissa = round_number(x/(10^fac), 3)
-    if mantissa >= 10 then
-        mantissa = mantissa / 10
-        fac = fac + 1
-    end
-    return sign..(string.format(fac >= 100 and "%.1fe%i" or fac >= 10 and "%.2fe%i" or "%.3fe%i", mantissa, fac))
+        local x = string.format("%.4g",num)
+        local fac = math.floor(math.log(tonumber(x), 10))
+        if num == math.huge then
+            return sign.."naneinf"
+        end
+        
+        local mantissa = round_number(x/(10^fac), 3)
+        if mantissa >= 10 then
+            mantissa = mantissa / 10
+            fac = fac + 1
+        end
+        return sign..(string.format(fac >= 100 and "%.1fe%i" or fac >= 10 and "%.2fe%i" or "%.3fe%i", mantissa, fac))
     end
     local formatted
-    if num ~= math.floor(num) and num < 100 then
+    if num ~= math.floor(num) and num < 10 then
         formatted = string.format("%.3f", num)
         if formatted:sub(-1) == "0" then
             formatted = formatted:gsub("%.?0+$", "")
         end
         -- Return already to avoid comas being added
-        if num < 0.01 then return tostring(num) end
+        return tostring(num)
     else 
         formatted = string.format("%.0f", num)
     end
