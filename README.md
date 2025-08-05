@@ -1,5 +1,5 @@
-# The Powerful Mod
-Have you ever wondered what Balatro would be like if someone added an exponent on the chips? No? That's fine, I did it anyway.
+# Pacdam
+RGBeet's fork of the Powerful mod, which is currently abandoned.
 
 Currently the Powerful mod adds:
 - The Pow mechanic
