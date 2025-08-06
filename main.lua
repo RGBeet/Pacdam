@@ -7,20 +7,6 @@ local mod_path = "" .. SMODS.current_mod.path       -- save the mod path for fut
 PacdamConfig = SMODS.current_mod.config          	-- loading configuration
 Pacdam.enabled = copy_table(PacdamConfig)      		-- what is enabled?
 
-Pacdan.Orders = {
-	Blind		= 0,
-	Booster		= 0,
-	Consumable	= 0,
-	Deck		= 0,
-	Edition		= 0,
-	Enhancement = 0,
-	Joker		= 0,
-	Seal		= 0,
-	Sleeve		= 0,
-	Tag			= 0,
-	Voucher		= 0,
-}
-
 -------------------------------------
 --------- ATLASES & SOUNDS ----------
 -------------------------------------
@@ -60,6 +46,10 @@ G.C.FISH        = HEX("308fe3")
 G.C.TETHERED    = HEX('248571')
 
 POW = Pacdam
+
+-- rarity boosters
+-- fire, air, earth, water blinds
+-- sulphur, mercury, salt
 
 function Pacdam.Funcs.calc_chips(chips, mult, pow)
     local sign = function (number)
@@ -134,7 +124,6 @@ function Pacdam.Funcs.flip_helper(source, targets, func)
     delay(0.5)
 end
 
-
 -- This method of loading would work for jokers too but I'm picky about collection order
 local function requireFolder(path)
     local files = NFS.getDirectoryItemsInfo(SMODS.current_mod.path .. "/" .. path)
@@ -148,27 +137,6 @@ end
 
 -- Load Misc
 requireFolder("misc/")
-
--- Load Jokers
-local files = {
-    'pow_hand_jokers',
-    'biker',
-    'broker',
-    'chameleon_ball',
-    'countess',
-    'fisherman',
-    'frog',
-    'pow_hand_jokers',
-    'power_bluff',
-    'power_play',
-    'reverse',
-    'superhero',
-    'uranium_glass'
-}
-
-MadLib.loop_func(files,function(v)
-    assert(SMODS.load_file('jokers/' .. v .. '.lua'))()
-end)
 
 -------------------------------------
 --------------- POW -----------------
@@ -225,7 +193,6 @@ table.insert(SMODS.calculation_keys, "h_pow")
 table.insert(SMODS.calculation_keys, "pow_mod")
 table.insert(SMODS.calculation_keys, "pow_decay")
 
-
 -- custom number formatting for additional decimal places
 local pow_number_format = function(num, e_switch_point)
     if type(num) ~= 'number' then return num end
@@ -262,7 +229,6 @@ local pow_number_format = function(num, e_switch_point)
     return sign..(formatted:reverse():gsub("(%d%d%d)", "%1,"):gsub(",$", ""):reverse())
 end
 
-
 -- function for updating the pow text
 G.FUNCS.hand_pow_UI_set = function(e)
     local new_pow_text = pow_number_format(G.GAME.current_round.current_hand.pow)
@@ -273,7 +239,6 @@ G.FUNCS.hand_pow_UI_set = function(e)
         if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.pow) == 'number' and G.GAME.current_round.current_hand.pow or 1)))) end
     end
 end
-
 
 -- hook for the flames on the pow box
 local flame_handler_ref = G.FUNCS.flame_handler

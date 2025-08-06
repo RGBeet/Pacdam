@@ -183,7 +183,7 @@ return {
                     "Can't be sold or",
                     "destroyed. Loses",
                     "{V:1}Tethered{} and becomes",
-                    "Debuffed if {C:attention}Lich{}",
+                    "Debuffed if {C:attention}Countess{}",
                     "is sold or destroyed."
                 }
             }
