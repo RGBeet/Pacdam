@@ -1,5 +1,5 @@
 SMODS.Joker{
-    key = "Reverse",
+    key = "reverse_card",
     rarity = 1,
     atlas = "Jokers",
     pos = {x = 0, y = 1},

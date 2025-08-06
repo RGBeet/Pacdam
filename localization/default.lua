@@ -1,15 +1,15 @@
 return {
     descriptions = {
         Edition = {
-            e_pow_Glow = {
+            e_pow_glow = {
                 name = "Glow in the Dark",
                 text = {
-                    "Gives {C:green}+#1#{} Pow"
+                    "Gives {C:pow}+#1#{} Pow"
                 }
             }
         },
         Fish = {
-            c_pow_Fish = {
+            c_pow_fish = {
                 name = "Fish",
                 text = {
                     "Draw a card",
@@ -18,55 +18,55 @@ return {
             }
         },
         Joker = {
-            j_pow_Twins = {
+            j_rgpd_power_of_two = {
                 name = "Power of Two",
                 text = {
-                    "{C:green}+#1#{} Pow if played",
+                    "{C:pow}+#1#{} Pow if played",
                     "hand contains",
                     "a {C:attention}Pair{}"
                 }
             },
-            j_pow_Triplets = {
+            j_rgpd_power_of_three = {
                 name = "Power of Three",
                 text = {
-                    "{C:green}+#1#{} Pow if played",
+                    "{C:pow}+#1#{} Pow if played",
                     "hand contains",
                     "a {C:attention}Three of a Kind{}"
                 }
             },
-            j_pow_Quadruplets = {
+            j_rgpd_power_of_four = {
                 name = "Power of Four",
                 text = {
-                    "{C:green}+#1#{} Pow if played",
+                    "{C:pow}+#1#{} Pow if played",
                     "hand contains",
                     "a {C:attention}Four of a Kind{}"
                 }
             },
-            j_pow_Mob = {
+            j_rgpd_power_series = {
                 name = "Power Series",
                 text = {
-                    "{C:green}+#1#{} Pow if played",
+                    "{C:pow}+#1#{} Pow if played",
                     "hand contains",
                     "a {C:attention}Straight{}"
                 }
             },
-            j_pow_Squad = {
+            j_rgpd_power_set = {
                 name = "Power Set",
                 text = {
-                    "{C:green}+#1#{} Pow if played",
+                    "{C:pow}+#1#{} Pow if played",
                     "hand contains",
                     "a {C:attention}Flush{}"
                 }
             },
-            j_pow_Blackjack = {
-                name = "Blackjack",
+            j_rgpd_power_play = {
+                name = "Power Play",
                 text = {
-                    "{C:green}+#1#{} Pow if ranks",
+                    "{C:pow}+#1#{} Pow if ranks",
                     "of played cards",
                     "sum to {C:attention}21{}"
                 }
             },
-            j_pow_Fisherman = {
+            j_rgpd_fisherman = {
                 name = "Fisherman",
                 text = {
                     "After Discard,",
@@ -74,8 +74,8 @@ return {
                     "{C:inactive}(Must have room){}"
                 },
             },
-            j_pow_Lich = {
-                name = "Lich",
+            j_rgpd_countess = {
+                name = "Countess",
                 text = {
                     "Adds a random",
                     "{C:dark_edition}Negative{} {V:1}Tethered{}",
@@ -83,80 +83,81 @@ return {
                     "Blind is defeated"
                 }
             },
-            j_pow_Frog = {
+            j_rgpd_frog = {
                 name = "Frog",
                 text = {
                     "#1#",
                     "{C:inactive}(when hand is played,",
-                    "{C:green}#2# in #3#{} {C:inactive}chance to eat",
+                    "{C:pow}#2# in #3#{} {C:inactive}chance to eat",
                     "{C:inactive}a non-scoring card.", 
                     "{C:inactive}Scores all eaten cards)"
                 }
             },
-            j_pow_Broker = {
+            j_rgpd_broker = {
                 name = "Broker",
                 text = {
-                    "{C:green}+#1#{} Pow for every",
+                    "{C:pow}+#1#{} Pow for every",
                     "{C:money}$#2#{} you have", 
-                    "{C:inactive}(Currently {C:green}+#3#{C:inactive} Pow)"
+                    "{C:inactive}(Currently {C:pow}+#3#{C:inactive} Pow)"
                 }
             },
-            j_pow_Uranium = {
+            j_rgpd_uranium_glass = {
                 name = "Uranium Glass",
                 text = {
                     "Played {C:attention}Stone Cards{}",
-                    "give {C:green}+#1#{} Pow",
+                    "give {C:pow}+#1#{} Pow",
                     "when scored"
                 }
             },
-            j_pow_Reverse = {
-                name = "Reverse",
+            j_rgpd_reverse_card = {
+                name = "Reverse Card",
                 text = {
                     "Swaps {C:chips}Chips{} and {C:mult}Mult{}"
                 },
             },
-            j_pow_Joku = {
-                name = "Joku",
+            j_rgpd_power_level = {
+                name = "power_level",
                 text = {
-                    "This joker gains {C:green}+#1#{} Pow",
+                    "This joker gains {C:pow}+#1#{} Pow",
                     "per {C:attention}consecutive{} hand that",
                     "exceeds required chips",
-                    "{C:inactive}(Currently {C:green}+#2#{} {C:inactive}Pow)"
+                    "{C:inactive}(Currently {C:pow}+#2#{} {C:inactive}Pow)",
+                    "\"It's over 9000!\"",
                 },
             },
-            j_pow_BigBluff = {
-                name = "Big Bluff",
+            j_rgpd_power_bluff = {
+                name = "Power Bluff",
                 text = {
-                    "{C:green}+#1#{} Pow, {C:red}-#2#{} Mult",
-                    "Start with {C:attention}one hand{}"
+                    "{C:pow}+#1#{} Pow, {C:red}-#2#{} Mult",
+                    "Start with {C:attention}1{} hand"
                 },
             },
-            j_pow_Biker = {
+            j_rgpd_biker = {
                 name = "Biker",
                 text = {
                     "Every played {C:attention}card",
                     "permanently gains",
-                    "{C:green}+#1#{} Pow, {C:red}-#2#{} Mult",
+                    "{C:pow}+#1#{} Pow, {C:red}-#2#{} Mult",
                     "when scored"
                 },
             },
-            j_pow_Chameleon = {
-                name = "Chameleon",
+            j_rgpd_chameleon_ball = {
+                name = "Chameleon Ball",
                 text = {
                     "Each {C:attention}Wild Card",
                     "held in hand",
-                    "gives {C:green}+#1#{} Pow",
+                    "gives {C:pow}+#1#{} Pow",
                 },
             },
-            j_pow_Superhero = {
+            j_rgpd_superhero = {
                 name = "Superhero",
                 text = {
-                    "{C:green}+#1#{} Pow",
+                    "{C:pow}+#1#{} Pow",
                     "{C:attention}Flips{} when most played",
                     "{C:attention}poker hand{} is played"
                 },
             },
-            j_pow_AlterEgo = {
+            j_rgpd_alter_ego = {
                 name = "Alter Ego",
                 text = {
                     "{C:attention}Flips{} when {C:attention}Boss Blind{}",
@@ -167,12 +168,12 @@ return {
         Other = {
             card_pow = {
                 text = {
-                    "{C:green}+#1#{} Pow"
+                    "{C:pow}+#1#{} Pow"
                 }
             },
             card_decay = {
                 text = {
-                    "{X:green,C:white}-#1#{} Pow"
+                    "{X:pow,C:white}-#1#{} Pow"
                 }
             },
             pow_tethered = {
@@ -196,14 +197,6 @@ return {
                 }
             }
         },
-        Stake = {
-            stake_green = {
-                name = "Green Stake",
-                text = {
-                    "All jokers {X:green,C:white}Decay{} at the end of each round"
-                }
-            }
-        }
     },
     misc = {
         dictionary = {
@@ -212,7 +205,7 @@ return {
         },
         labels = {
             pow_tethered = "Tethered",
-            pow_Glow = "Glow in the Dark"
+            pow_glow = "Glow in the Dark"
         },
         v_dictionary={
             a_pow="+#1# Pow",

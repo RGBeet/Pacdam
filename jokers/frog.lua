@@ -31,7 +31,7 @@ local hook_frog = function(card)
 end
 
 SMODS.Joker{
-    key = "Frog",
+    key = "frog",
     rarity = 2,
     atlas = "Jokers",
     pos = {x = 7, y = 0},
@@ -53,7 +53,7 @@ SMODS.Joker{
     calculate = function(self, card, context)
         if not context.blueprint and context.before and context.cardarea == G.jokers then
             local override = false
-            if pseudorandom("Frog") < G.GAME.probabilities.normal / card.ability.extra.odds or override then
+            if pseudorandom("frog") < G.GAME.probabilities.normal / card.ability.extra.odds or override then
                 local unscored_cards = {}
                 for i=1, #context.full_hand do
                     if not tableContains(context.scoring_hand, context.full_hand[i]) then
@@ -61,7 +61,7 @@ SMODS.Joker{
                     end
                 end
                 if next(unscored_cards) then
-                    local v, k = pseudorandom_element(unscored_cards, pseudoseed("Frog"))
+                    local v, k = pseudorandom_element(unscored_cards, pseudoseed("frog"))
 
                     local _card = copy_card(v, nil, nil, G.playing_card)
                     v.can_calculate = function () return false end
@@ -78,7 +78,7 @@ SMODS.Joker{
                             return true
                         end
                     }))
-                    card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ribbit", colour = G.C.green })
+                    card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ribbit", colour = G.C.POW })
                 end
             end
         end

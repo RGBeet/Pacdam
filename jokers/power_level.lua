@@ -2,7 +2,7 @@ local default_sprite_pos = { x = 2, y = 1 }
 local animation_frames = {{ x = 3, y = 1 }, { x = 4, y = 1 }}
 
 SMODS.Joker{
-    key = "Joku",
+    key = "power_level",
     rarity = 3,
     atlas = "Jokers",
     pos = default_sprite_pos,
@@ -42,7 +42,7 @@ SMODS.Joker{
         if not context.blueprint and context.after and context.cardarea == G.jokers then
             if hand_chips^pow*mult > G.GAME.blind.chips then
                 card.ability.extra.pow_bonus = card.ability.extra.pow_bonus + card.ability.extra.pow_rate
-                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Power Up!", colour = G.C.GREEN })
+                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Power Up!", colour = G.C.POW })
                 G.E_MANAGER:add_event(Event({
                     func = function()
                         card.ability.extra.animate = false
@@ -51,7 +51,7 @@ SMODS.Joker{
                 }))
             else
                 card.ability.extra.pow_bonus = 0
-                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Reset!", colour = G.C.GREEN })
+                card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Reset!", colour = G.C.POW })
             end
         end
     end,

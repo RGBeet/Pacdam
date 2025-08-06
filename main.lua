@@ -1,23 +1,53 @@
+Pacdam = { Funcs = { }, JokerLists = { } }
+pmfuncs 	= Pacdam.Funcs
+pmjokers	= Pacdam.JokerLists
+
+-- enabled type stuff
+local mod_path = "" .. SMODS.current_mod.path       -- save the mod path for future usage!
+PacdamConfig = SMODS.current_mod.config          	-- loading configuration
+Pacdam.enabled = copy_table(PacdamConfig)      		-- what is enabled?
+
+Madcap.Orders = {
+	Blind		= 0,
+	Booster		= 0,
+	Consumable	= 0,
+	Deck		= 0,
+	Edition		= 0,
+	Enhancement = 0,
+	Joker		= 0,
+	Seal		= 0,
+	Sleeve		= 0,
+	Tag			= 0,
+	Voucher		= 0,
+}
+
 -------------------------------------
 --------- ATLASES & SOUNDS ----------
 -------------------------------------
 
 SMODS.Atlas{
     key = "Jokers",
-    path = "Jokers.png",
+    path = "jokers.png",
     px = 71,
     py = 95
 }
 
 SMODS.Atlas{
+    key = "modicon",
+    path = "modicon.png",
+    px = 34,
+    py = 34
+}
+
+SMODS.Atlas{
     key = "Extras",
-    path = "Extras.png",
+    path = "extras.png",
     px = 71,
     py = 95
 }
 
 SMODS.Sound{
-    key = "pow_hit",
+    key = "rgpd_hit",
     path = "pow_hit.ogg"
 }
 
@@ -25,17 +55,20 @@ SMODS.Sound{
 -------- HELPERS & CONSTANTS --------
 -------------------------------------
 
-G.C.FISH = HEX("308fe3")
-G.C.TETHERED = HEX('248571')
+G.C.POW         = HEX('4C0675')
+G.C.FISH        = HEX("308fe3")
+G.C.TETHERED    = HEX('248571')
 
-POW = {}
-function POW.calc_chips(chips, mult, pow)
+POW = Pacdam
+
+function Pacdam.Funcs.calc_chips(chips, mult, pow)
     local sign = function (number)
         return number > 0 and 1 or (number == 0 and 0 or -1)
     end
-    return sign(chips)*(math.abs(chips)^pow)*mult
+    return sign(chips) * (math.abs(chips) ^ pow) * mult
 end
 
+--[[
 function POW.get_most_played_poker_hand()
     local _handname, _played, _order = 'High Card', -1, 100
     for k, v in pairs(G.GAME.hands) do
@@ -45,11 +78,11 @@ function POW.get_most_played_poker_hand()
         end
     end
     return _handname
-end
+end]]
 
-function POW.flip_helper(source, targets, func)
+function Pacdam.Funcs.flip_helper(source, targets, func)
     if source then
-        G.E_MANAGER:add_event(Event({
+        MadLib.event({
             trigger = 'after',
             delay = 0.4,
             func = function()
@@ -57,29 +90,29 @@ function POW.flip_helper(source, targets, func)
                 source:juice_up(0.3, 0.5)
                 return true
             end
-        }))
+        })
     end
     for i = 1, #targets do
         local percent = 1.15 - (i - 0.999) / (#targets - 0.998) * 0.3
-        G.E_MANAGER:add_event(Event({
+        MadLib.event({
             trigger = 'after',
             delay = 0.15,
             func = function()
                 targets[i]:flip(); play_sound('card1', percent); targets[i]:juice_up(0.3, 0.3); return true
             end
-        }))
+        })
     end
     delay(0.2)
     for i = 1, #targets do
-        G.E_MANAGER:add_event(Event({
+        MadLib.event({
             trigger = 'after',
             delay = 0.1,
             func = func
-        }))
+        })
     end
     for i = 1, #targets do
         local percent = 0.85 + (i - 0.999) / (#targets - 0.998) * 0.3
-        G.E_MANAGER:add_event(Event({
+        MadLib.event({
             trigger = 'after',
             delay = 0.15,
             func = function()
@@ -88,16 +121,16 @@ function POW.flip_helper(source, targets, func)
                 targets[i]:juice_up(0.3, 0.3)
                 return true
             end
-        }))
+        })
     end
-    G.E_MANAGER:add_event(Event({
+    MadLib.event({
         trigger = 'after',
         delay = 0.2,
         func = function()
             G.hand:unhighlight_all()
             return true
         end
-    }))
+    })
     delay(0.5)
 end
 
@@ -117,20 +150,25 @@ end
 requireFolder("misc/")
 
 -- Load Jokers
-assert(SMODS.load_file("jokers/pow_hand_jokers.lua"))()
-assert(SMODS.load_file("jokers/reverse.lua"))()
-assert(SMODS.load_file("jokers/fisherman.lua"))()
-assert(SMODS.load_file("jokers/lich.lua"))()
-assert(SMODS.load_file("jokers/frog.lua"))()
-assert(SMODS.load_file("jokers/broker.lua"))()
-assert(SMODS.load_file("jokers/big_bluff.lua"))()
-assert(SMODS.load_file("jokers/joku.lua"))()
-assert(SMODS.load_file("jokers/uranium_glass.lua"))()
-assert(SMODS.load_file("jokers/blackjack.lua"))()
-assert(SMODS.load_file("jokers/biker.lua"))()
-assert(SMODS.load_file("jokers/chameleon.lua"))()
-assert(SMODS.load_file("jokers/superhero.lua"))()
+local files = {
+    'pow_hand_jokers',
+    'biker',
+    'broker',
+    'chameleon_ball',
+    'countess',
+    'fisherman',
+    'frog',
+    'pow_hand_jokers',
+    'power_bluff',
+    'power_play',
+    'reverse',
+    'superhero',
+    'uranium_glass'
+}
 
+MadLib.loop_func(files,function(v)
+    assert(SMODS.load_file('jokers/' .. v .. '.lua'))()
+end)
 
 -------------------------------------
 --------------- POW -----------------
@@ -280,4 +318,57 @@ end
 -- function to get perma_pow from playing_cards
 Card.get_pow_bonus = function (self)
     return self.ability.perma_pow and self.ability.perma_pow or 0
+end
+
+-- File loading based on Cryptid mod lmao
+local errors = {}
+Pacdam.object_buffer = {}
+
+local function load_folder(folder)
+	local files = NFS.getDirectoryItems(mod_path .. folder)
+	for _, file in ipairs(files) do
+		tell("Loading file "..file)
+		local f, err = SMODS.load_file(folder .. "/" .. file)
+		if err then
+			errors[file] = err
+		else
+			local curr_obj = f()
+			local namey = curr_obj.name
+			if curr_obj.name == "HTTPS Module" and Pacdam[curr_obj.name] == nil then
+				PacdamConfig[curr_obj.name] = false
+			end
+			if PacdamConfig[curr_obj.name] == nil then
+				PacdamConfig[curr_obj.name] = true
+				Pacdam.enabled[curr_obj.name] = true
+				tell("Loading current object "..namey)
+			end
+			if PacdamConfig[curr_obj.name] then
+				tell("Succesfully loaded " .. namey)
+				if curr_obj.init then
+					curr_obj:init()
+				end
+				if not curr_obj.items then
+					tell("Warning: " .. namey .. " has no items")
+				else
+					for _, item in ipairs(curr_obj.items) do
+						if not item.order then
+							item.order = 0
+						end
+						if curr_obj.order then
+							item.order = item.order + curr_obj.order
+						end
+						if SMODS[item.object_type] then
+							if not Pacdam.object_buffer[item.object_type] then
+								Pacdam.object_buffer[item.object_type] = {}
+							end
+							--tell("Added item to obj_buffer of "..namey)
+							Pacdam.object_buffer[item.object_type][#Pacdam.object_buffer[item.object_type] + 1] = item
+						else
+							tell("Error loading item "..namey .." :(")
+						end
+					end
+				end
+			end
+		end
+	end
 end

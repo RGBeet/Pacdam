@@ -23,13 +23,13 @@ SMODS.Joker{
         if card.ability.extra.super_active then
             if not card.fake_card then
                 info_queue[#info_queue+1] = { 
-                    key = "j_pow_AlterEgo", 
+                    key = "j_rgpd_alter_ego", 
                     set = "Joker",
                     config = { extra = { pow = 0.5, super_active = false, queue_flip = false } },
                 }
             end
             return {
-                key = "j_pow_Superhero",
+                key = "j_rgpd_superhero",
                 vars = { card.ability.extra.pow }
             }
         else
@@ -37,7 +37,7 @@ SMODS.Joker{
                 info_queue[#info_queue+1] = G.P_CENTERS.j_pow_Superhero
             end
             return {
-                key = "j_pow_AlterEgo"
+                key = "j_rgpd_alter_ego"
             }
         end
     end,
@@ -53,7 +53,7 @@ SMODS.Joker{
 
         if card.ability.extra.super_active then
             if context.before and context.cardarea == G.jokers then
-                card.ability.extra.queue_flip = context.scoring_name == POW.get_most_played_poker_hand()
+                card.ability.extra.queue_flip = context.scoring_name == MadLib.get_most_played_hand()
             end
             if context.joker_main then
                 return {
@@ -71,7 +71,7 @@ SMODS.Joker{
             })
         end
     end,
-
+    --[[
     set_sprites = function (self, card, front)
         if card.children.back then card.children.back:remove() end
         card.children.back = Sprite(card.T.x, card.T.y, card.T.w, card.T.h, G.ASSET_ATLAS["pow_Jokers"], { x = 8, y = 1 })
@@ -80,11 +80,11 @@ SMODS.Joker{
         card.children.back.states.drag = card.states.drag
         card.children.back.states.collide.can = false
         card.children.back:set_role({ major = card, role_type = 'Glued', draw_major = card })
-        if card.ability and not card.ability.extra.super_active then
+        if card.ability and not (card.ability.extra and card.ability.extra.super_active) then
             card.sprite_facing = card.facing == "front" and "back" or "front"
         end
     end,
-
+    ]]
     update = function (self, card, dt)
         if card.VT.w <= 0 then
             if card.flipping == 'super' then

@@ -1,5 +1,5 @@
 SMODS.Joker{
-    key = "BigBluff",
+    key = "power_bluff",
     rarity = 1,
     atlas = "Jokers",
     pos = {x = 5, y = 1},

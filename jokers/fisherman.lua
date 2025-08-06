@@ -1,5 +1,5 @@
 SMODS.Joker{
-    key = "Fisherman",
+    key = "fisherman",
     rarity = 2,
     atlas = "Jokers",
     pos = {x = 5, y = 0},
@@ -58,7 +58,7 @@ SMODS.ConsumableType{
 }
 
 SMODS.Consumable{
-    key = "Fish",
+    key = "fish",
     set = "Fish",
     atlas = "Extras",
     pos = {x = 0, y = 0},

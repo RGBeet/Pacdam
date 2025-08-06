@@ -17,7 +17,7 @@ SMODS.Shader{
 -- }
 
 SMODS.Edition{
-    key = "Glow",
+    key = "glow",
     shader = "glow",
     config = { pow = 0.3 },
     in_shop = true,

@@ -12,7 +12,7 @@ position = "before"
 match_indent = false
 payload = """
               {n=G.UIT.R, config={align = "cm", minh = 0.5, draw_layer = 1}, nodes={
-                {n=G.UIT.C, config={align = "cr", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.GREEN, id = 'hand_pow_area', emboss = 0.05, padding = 0.03}, nodes={
+                {n=G.UIT.C, config={align = "cr", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.POW, id = 'hand_pow_area', emboss = 0.05, padding = 0.03}, nodes={
                     {n=G.UIT.O, config={func = 'flame_handler',no_role = true, id = 'flame_pow', object = Moveable(0,0,0,0), w = 0, h = 0}},
                     {n=G.UIT.O, config={id = 'hand_pow', func = 'hand_pow_UI_set',object = DynaText({string = {{ref_table = G.GAME.current_round.current_hand, ref_value = "pow_text"}}, colours = {G.C.UI.TEXT_LIGHT}, font = G.LANGUAGES['en-us'].font, shadow = true, float = true, scale = scale*1.4})}},
                     {n=G.UIT.B, config={w=0.1,h=0.1}},
@@ -65,17 +65,17 @@ position = "before"
 match_indent = true
 payload = """
 elseif (eval_type == 'pow') or (eval_type == 'h_pow') then 
-    sound = 'pow_hit'
+    sound = 'rgpd_hit'
     amt = amt
     text = localize{type='variable',key='a_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
-    colour = G.C.GREEN
+    colour = G.C.POW
     config.type = 'fade'
     config.scale = 0.7
 elseif (eval_type == 'pow_decay') then 
     sound = 'cancel'
     amt = amt
     text = localize{type='variable',key='a_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
-    colour = G.C.GREEN
+    colour = G.C.POW
     config.type = 'fade'
     config.scale = 0.7
 """
@@ -133,7 +133,7 @@ if pow ~= 1 then
   G.E_MANAGER:add_event(Event({
       trigger = 'after',delay = 0.4,
       func = function()  
-        update_hand_text({delay = 0, immediate = true}, {chips = POW.calc_chips(hand_chips, 1, pow), pow = 1, level = '', handname = ''})
+        update_hand_text({delay = 0, immediate = true}, {chips = Pacdam.Funcs.calc_chips(hand_chips, 1, pow), pow = 1, level = '', handname = ''})
         play_sound('button', 0.9, 0.6)
         G.E_MANAGER:add_event(Event({
           func = function() pow = 1;return true end
@@ -154,7 +154,7 @@ pattern = 'hand_chips\*mult'
 position = "at"
 overwrite = true
 match_indent = false
-payload = "POW.calc_chips(hand_chips, mult, pow)"
+payload = "Pacdam.Funcs.calc_chips(hand_chips, mult, pow)"
 
 
 # Adds support for pow on playing cards
@@ -215,7 +215,7 @@ pattern = '''func = (function()  update_hand_text({delay = 0, immediate = true},
 position = "at"
 overwrite = true
 match_indent = true
-payload = '''func = (function()  update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 0, pow = 1, chip_total = math.floor(POW.calc_chips(hand_chips, mult, pow)), level = '', handname = ''});play_sound('button', 0.9, 0.6);return true end)'''
+payload = '''func = (function()  update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 0, pow = 1, chip_total = math.floor(Pacdam.Funcs.calc_chips(hand_chips, mult, pow)), level = '', handname = ''});play_sound('button', 0.9, 0.6);return true end)'''
 
 
 # Makes negative chips work
@@ -255,7 +255,7 @@ match_indent = true
 payload = """if type(G.GAME.current_round.current_hand.chips) ~= 'number' or type(G.GAME.current_round.current_hand.mult) ~= 'number' or type(G.GAME.current_round.current_hand.pow) ~= 'number' then
     G.ARGS.score_intensity.earned_score = 0
   else
-    G.ARGS.score_intensity.earned_score = POW.calc_chips(G.GAME.current_round.current_hand.chips, G.GAME.current_round.current_hand.mult, G.GAME.current_round.current_hand.pow)
+    G.ARGS.score_intensity.earned_score = Pacdam.Funcs.calc_chips(G.GAME.current_round.current_hand.chips, G.GAME.current_round.current_hand.mult, G.GAME.current_round.current_hand.pow)
   end"""
 
 
@@ -270,7 +270,7 @@ payload = """
   pow = {
     id = 'flame_pow',
     arg_tab = 'pow_flames',
-    colour = G.C.GREEN,
+    colour = G.C.POW,
     accent = G.C.UI_POWLICK,
     y = 0,
     w = 1.75,
@@ -288,6 +288,15 @@ match_indent = true
 overwrite = true
 payload = """e.config.object = Sprite(0, 0, v.w and v.w or 2.5, v.h and v.h or 2.5, G.ASSET_ATLAS["ui_1"], {x = 2, y = 0})"""
 
+
+[[patches]]
+[patches.pattern]
+target = "functions/misc_functions.lua"
+pattern = '''legendary = G.C.RARITY[4],'''
+position = "after"
+match_indent = true
+overwrite = true
+payload = '''pow = G.C.POW,'''
 
 # Allows for the pow flame to be shifted down a bit
 # [[patches]]

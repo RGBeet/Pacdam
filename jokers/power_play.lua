@@ -1,5 +1,5 @@
 SMODS.Joker{
-    key = "Blackjack",
+    key = "power_play",
     rarity = 1,
     atlas = "Jokers",
     pos = {x = 1, y = 1},

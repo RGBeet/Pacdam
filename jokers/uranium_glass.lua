@@ -1,5 +1,5 @@
 SMODS.Joker{
-    key = "Uranium",
+    key = "uranium_glass",
     rarity = 2,
     atlas = "Jokers",
     pos = {x = 9, y = 0},
