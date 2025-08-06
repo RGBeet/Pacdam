@@ -115,14 +115,15 @@ return {
                     "Swaps {C:chips}Chips{} and {C:mult}Mult{}"
                 },
             },
-            j_rgpd_power_level = {
-                name = "power_level",
+            j_rgpd_joku = {
+                name = "Joku",
                 text = {
                     "This joker gains {C:pow}+#1#{} Pow",
                     "per {C:attention}consecutive{} hand that",
                     "exceeds required chips",
                     "{C:inactive}(Currently {C:pow}+#2#{} {C:inactive}Pow)",
-                    "\"It's over 9000!\"",
+                    "What does the scouter say",
+                    "about his power level?!"
                 },
             },
             j_rgpd_power_bluff = {

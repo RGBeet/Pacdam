@@ -7,7 +7,7 @@ local mod_path = "" .. SMODS.current_mod.path       -- save the mod path for fut
 PacdamConfig = SMODS.current_mod.config          	-- loading configuration
 Pacdam.enabled = copy_table(PacdamConfig)      		-- what is enabled?
 
-Madcap.Orders = {
+Pacdan.Orders = {
 	Blind		= 0,
 	Booster		= 0,
 	Consumable	= 0,
@@ -371,4 +371,24 @@ local function load_folder(folder)
 			end
 		end
 	end
+end
+
+load_folder('items') -- load the items folder
+
+for set, objs in pairs(Pacdam.object_buffer) do
+	table.sort(objs, function(a, b)
+		return a.order < b.order
+	end)
+	for i = 1, #objs do
+		if objs[i].post_process and type(objs[i].post_process) == "function" then
+			objs[i]:post_process()
+		end
+		SMODS[set](objs[i])
+	end
+end
+
+print(errors)
+
+for f, e in ipairs(errors) do
+    tell_stat("Error loading file",e)
 end
