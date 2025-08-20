@@ -65,6 +65,10 @@ POW = Pacdam
 -- fire, air, earth, water blinds
 -- sulphur, mercury, salt
 
+-- rarity boosters
+-- fire, air, earth, water blinds
+-- sulphur, mercury, salt
+
 function Pacdam.Funcs.calc_chips(chips, mult, pow)
     --print(" Chips = " .. tostring(chips) .. ", Mult = " .. tostring(mult) .. ", Pow = " .. tostring(pow) .. ".")
     return (math.abs(chips) ^ pow) * mult
@@ -135,6 +139,24 @@ function Pacdam.Funcs.flip_helper(source, targets, func)
     })
     delay(0.5)
 end
+
+-- This method of loading would work for jokers too but I'm picky about collection order
+local function requireFolder(path)
+    local files = NFS.getDirectoryItemsInfo(SMODS.current_mod.path .. "/" .. path)
+    for i = 1, #files do
+        local file_name = files[i].name
+        if file_name:sub(-4) == ".lua" then
+            assert(SMODS.load_file(path .. file_name))()
+        end
+    end
+end
+
+-- Load Misc
+requireFolder("misc/")
+
+-------------------------------------
+--------------- POW -----------------
+-------------------------------------
 
 -- hook for setting pow to 1 when a hand is being evaluated
 local evaluate_play_ref = G.FUNCS.evaluate_play

@@ -137,6 +137,8 @@ return {
             },
             j_rgpd_joku = {
                 name = "Joku",
+            j_rgpd_joku = {
+                name = "Joku",
                 text = {
                     "This joker gains {C:pow}+#1#{} Pow",
                     "per {C:attention}consecutive{} hand that",
