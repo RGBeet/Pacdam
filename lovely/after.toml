@@ -1,0 +1,14 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 42042
+
+# This also accounts for Paya's Terrible Addons, which does something similar.
+[[patches]]
+[patches.regex]
+target = 'functions/state_events.lua'
+pattern = '''math\.floor\(MadLib\.get_full_score\(hand_chips,mult\)\)'''
+position = 'at'
+payload = '''math.floor(MadLib.get_full_score(hand_chips,mult,pow))'''
+match_indent = true
+times = 10

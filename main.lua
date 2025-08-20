@@ -1,4 +1,9 @@
-Pacdam = { Funcs = { }, JokerLists = { } }
+Pacdam = {
+    devmode = true,
+    Funcs = { },
+    JokerLists = { },
+    object_buffer = {}
+}
 pmfuncs 	= Pacdam.Funcs
 pmjokers	= Pacdam.JokerLists
 
@@ -7,26 +12,12 @@ local mod_path = "" .. SMODS.current_mod.path       -- save the mod path for fut
 PacdamConfig = SMODS.current_mod.config          	-- loading configuration
 Pacdam.enabled = copy_table(PacdamConfig)      		-- what is enabled?
 
-Madcap.Orders = {
-	Blind		= 0,
-	Booster		= 0,
-	Consumable	= 0,
-	Deck		= 0,
-	Edition		= 0,
-	Enhancement = 0,
-	Joker		= 0,
-	Seal		= 0,
-	Sleeve		= 0,
-	Tag			= 0,
-	Voucher		= 0,
-}
-
 -------------------------------------
 --------- ATLASES & SOUNDS ----------
 -------------------------------------
 
 SMODS.Atlas{
-    key = "Jokers",
+    key = "jokers",
     path = "jokers.png",
     px = 71,
     py = 95
@@ -40,32 +31,43 @@ SMODS.Atlas{
 }
 
 SMODS.Atlas{
-    key = "Extras",
+    key = "extras",
     path = "extras.png",
     px = 71,
     py = 95
 }
 
+SMODS.Atlas{
+    key = "enhancements",
+    path = "enhancements.png",
+    px = 71,
+    py = 95
+}
+
 SMODS.Sound{
-    key = "rgpd_hit",
+    key = "pow_hit",
     path = "pow_hit.ogg"
 }
+
+SMODS.Shader{ key = 'glow',  path = 'glow.fs' }
+SMODS.Shader{ key = 'glowbloom',  path = 'glowbloom.fs' }
 
 -------------------------------------
 -------- HELPERS & CONSTANTS --------
 -------------------------------------
 
-G.C.POW         = HEX('4C0675')
+G.C.POW         = HEX('57C185')
 G.C.FISH        = HEX("308fe3")
 G.C.TETHERED    = HEX('248571')
-
 POW = Pacdam
 
+-- rarity boosters
+-- fire, air, earth, water blinds
+-- sulphur, mercury, salt
+
 function Pacdam.Funcs.calc_chips(chips, mult, pow)
-    local sign = function (number)
-        return number > 0 and 1 or (number == 0 and 0 or -1)
-    end
-    return sign(chips) * (math.abs(chips) ^ pow) * mult
+    --print(" Chips = " .. tostring(chips) .. ", Mult = " .. tostring(mult) .. ", Pow = " .. tostring(pow) .. ".")
+    return (math.abs(chips) ^ pow) * mult
 end
 
 --[[
@@ -134,46 +136,6 @@ function Pacdam.Funcs.flip_helper(source, targets, func)
     delay(0.5)
 end
 
-
--- This method of loading would work for jokers too but I'm picky about collection order
-local function requireFolder(path)
-    local files = NFS.getDirectoryItemsInfo(SMODS.current_mod.path .. "/" .. path)
-    for i = 1, #files do
-        local file_name = files[i].name
-        if file_name:sub(-4) == ".lua" then
-            assert(SMODS.load_file(path .. file_name))()
-        end
-    end
-end
-
--- Load Misc
-requireFolder("misc/")
-
--- Load Jokers
-local files = {
-    'pow_hand_jokers',
-    'biker',
-    'broker',
-    'chameleon_ball',
-    'countess',
-    'fisherman',
-    'frog',
-    'pow_hand_jokers',
-    'power_bluff',
-    'power_play',
-    'reverse',
-    'superhero',
-    'uranium_glass'
-}
-
-MadLib.loop_func(files,function(v)
-    assert(SMODS.load_file('jokers/' .. v .. '.lua'))()
-end)
-
--------------------------------------
---------------- POW -----------------
--------------------------------------
-
 -- hook for setting pow to 1 when a hand is being evaluated
 local evaluate_play_ref = G.FUNCS.evaluate_play
 G.FUNCS.evaluate_play = function(e)
@@ -184,23 +146,27 @@ end
 -- hook for setting the pow text value to 1 when there is no pow key
 local update_hand_text_ref = update_hand_text
 function update_hand_text(config, vals)
-    if not vals.pow then
-        if pow then
-            vals.pow = pow
-        else
-            vals.pow = 1
-        end
-    end
+    vals.pow = vals.pow or (pow or 1)
     return update_hand_text_ref(config, vals)
+end
+
+function Pacdam.Funcs.xpow(pow,amt)
+    return 1 + ((pow - 1) * amt)
+end
+
+function Pacdam.Funcs.epow(pow,amt)
+    return pow > 1 and (1+ (((pow-1)*100)^amt)/100) or (pow ^ amt)
 end
 
 -- hook for allowing jokers to return pow in their calculate functions
 local calculate_individual_effect_ref = SMODS.calculate_individual_effect
 SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, from_edition)
+
     if (key == 'pow' or key == 'h_pow' or key == 'pow_mod' or key == 'pow_decay') and amount then
         if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
         pow = pow + amount
         update_hand_text({delay = 0}, {chips = hand_chips, mult = mult, pow = pow})
+
         if not effect.remove_default_message then
             if from_edition then
                 card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_pow' or 'a_pow_minus', vars = {amount}}, chip_mod = amount, colour = G.C.EDITION, edition = true})
@@ -225,43 +191,28 @@ table.insert(SMODS.calculation_keys, "h_pow")
 table.insert(SMODS.calculation_keys, "pow_mod")
 table.insert(SMODS.calculation_keys, "pow_decay")
 
-
 -- custom number formatting for additional decimal places
 local pow_number_format = function(num, e_switch_point)
     if type(num) ~= 'number' then return num end
-
     local sign = (num >= 0 and "") or "-"
     num = math.abs(num)
     G.E_SWITCH_POINT = G.E_SWITCH_POINT or 100000000000
     if not num or type(num) ~= 'number' then return num or '' end
     if num >= (e_switch_point or G.E_SWITCH_POINT) then
-        local x = string.format("%.4g",num)
+        if num == math.huge then return sign.."naneinf" end
+        local x = string.format("%.4g", num)
         local fac = math.floor(math.log(tonumber(x), 10))
-        if num == math.huge then
-            return sign.."naneinf"
-        end
-        
-        local mantissa = round_number(x/(10^fac), 3)
-        if mantissa >= 10 then
-            mantissa = mantissa / 10
-            fac = fac + 1
-        end
-        return sign..(string.format(fac >= 100 and "%.1fe%i" or fac >= 10 and "%.2fe%i" or "%.3fe%i", mantissa, fac))
+        local mantissa = round_number(x / (10 ^ fac), 3)
+        if mantissa >= 10 then mantissa = mantissa / 10; fac = fac + 1 end
+        return sign .. string.format(fac >= 100 and "%.1fe%i" or fac >= 10 and "%.2fe%i" or "%.3fe%i", mantissa, fac)
     end
-    local formatted
-    if num ~= math.floor(num) and num < 10 then
-        formatted = string.format("%.3f", num)
-        if formatted:sub(-1) == "0" then
-            formatted = formatted:gsub("%.?0+$", "")
-        end
-        -- Return already to avoid comas being added
-        return tostring(num)
-    else 
-        formatted = string.format("%.0f", num)
-    end
-    return sign..(formatted:reverse():gsub("(%d%d%d)", "%1,"):gsub(",$", ""):reverse())
+    -- Format with 2 decimal places always
+    local formatted = string.format("%.2f", num)
+    -- Add commas if needed
+    local int_part, dec_part = formatted:match("^(%d+)%p(%d%d)$")
+    if int_part then int_part = int_part:reverse():gsub("(%d%d%d)", "%1,"):gsub(",$", ""):reverse(); formatted = int_part .. "." .. dec_part end
+    return sign .. formatted
 end
-
 
 -- function for updating the pow text
 G.FUNCS.hand_pow_UI_set = function(e)
@@ -273,7 +224,6 @@ G.FUNCS.hand_pow_UI_set = function(e)
         if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.pow) == 'number' and G.GAME.current_round.current_hand.pow or 1)))) end
     end
 end
-
 
 -- hook for the flames on the pow box
 local flame_handler_ref = G.FUNCS.flame_handler
@@ -288,9 +238,7 @@ end
 -- hook to fix scaling for negative numbers
 local scale_number_ref = scale_number
 scale_number = function(number, scale, max, e_switch_point)
-  if type(number) == "number" and number < 0 then
-    number = math.abs(number) * 10
-  end
+  if type(number) == "number" and number < 0 then number = math.abs(number) * 10 end
   return scale_number_ref(number, scale, max, e_switch_point)
 end
 
@@ -320,55 +268,163 @@ Card.get_pow_bonus = function (self)
     return self.ability.perma_pow and self.ability.perma_pow or 0
 end
 
--- File loading based on Cryptid mod lmao
-local errors = {}
-Pacdam.object_buffer = {}
+local uibox_ref = create_UIBox_HUD
+function create_UIBox_HUD()
+	local orig = uibox_ref()
 
-local function load_folder(folder)
-	local files = NFS.getDirectoryItems(mod_path .. folder)
-	for _, file in ipairs(files) do
-		tell("Loading file "..file)
-		local f, err = SMODS.load_file(folder .. "/" .. file)
+    local hands_ui = orig.nodes[1].nodes[1].nodes[4]
+
+    table.insert(hands_ui.nodes[1].nodes, 2, {n=G.UIT.R, config={align = "cm", minh = 0.5, draw_layer = 1}, nodes={
+        {n=G.UIT.C, config={align = "cr", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.POW, id = 'hand_pow_area', emboss = 0.05, padding = 0.03}, nodes={
+            {n=G.UIT.O, config={func = 'flame_handler',no_role = true, id = 'flame_pow', object = Moveable(0,0,0,0), w = 0, h = 0}},
+            {n=G.UIT.O, config={id = 'hand_pow', func = 'hand_pow_UI_set',object = DynaText({string = {{ref_table = G.GAME.current_round.current_hand, ref_value = "pow_text"}}, colours = {G.C.UI.TEXT_LIGHT}, font = G.LANGUAGES['en-us'].font, shadow = true, float = true, scale = 0.5, r = 0.4*1.4})}},
+            {n=G.UIT.B, config={w=0.1,h=0.1}},
+        }},
+        {n=G.UIT.C, config={align = "cm", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.CLEAR, id = 'hand_pow_empty', emboss = 0.05}},
+    }})
+    return orig
+end
+
+SMODS.Sticker:take_ownership("eternal", {
+    draw = function(self, card, layer)
+        if card.ability.pow_tethered then return end
+        G.shared_stickers[self.key].role.draw_major = card
+        G.shared_stickers[self.key]:draw_shader('dissolve', nil, nil, nil, card.children.center)
+        G.shared_stickers[self.key]:draw_shader('voucher', nil, card.ARGS.send_to_shader, nil, card.children.center)
+    end
+}, true)
+
+local generate_UIBox_ability_table_ref = Card.generate_UIBox_ability_table
+function Card:generate_UIBox_ability_table(...)
+    local eternal_state = self.ability.eternal
+    if self.ability.eternal and self.ability.pow_tethered then self.ability.eternal = false end
+    local ret = generate_UIBox_ability_table_ref(self, ...)
+    self.ability.eternal = eternal_state
+    return ret
+end
+
+Pacdam.object_buffer['Jokers'] = Pacdam.object_buffer['Jokers'] or {}
+local function load_items(path,func)
+	local files = NFS.getDirectoryItems(mod_path..path)
+	tell('File path is '.. path)
+	MadLib.loop_func(files, function(file)
+		tell('File is '..file)
+		local f, err = SMODS.load_file(path..file)
 		if err then
-			errors[file] = err
-		else
-			local curr_obj = f()
-			local namey = curr_obj.name
-			if curr_obj.name == "HTTPS Module" and Pacdam[curr_obj.name] == nil then
-				PacdamConfig[curr_obj.name] = false
-			end
-			if PacdamConfig[curr_obj.name] == nil then
-				PacdamConfig[curr_obj.name] = true
-				Pacdam.enabled[curr_obj.name] = true
-				tell("Loading current object "..namey)
-			end
-			if PacdamConfig[curr_obj.name] then
-				tell("Succesfully loaded " .. namey)
-				if curr_obj.init then
-					curr_obj:init()
-				end
-				if not curr_obj.items then
-					tell("Warning: " .. namey .. " has no items")
-				else
-					for _, item in ipairs(curr_obj.items) do
-						if not item.order then
-							item.order = 0
-						end
-						if curr_obj.order then
-							item.order = item.order + curr_obj.order
-						end
-						if SMODS[item.object_type] then
-							if not Pacdam.object_buffer[item.object_type] then
-								Pacdam.object_buffer[item.object_type] = {}
-							end
-							--tell("Added item to obj_buffer of "..namey)
-							Pacdam.object_buffer[item.object_type][#Pacdam.object_buffer[item.object_type] + 1] = item
-						else
-							tell("Error loading item "..namey .." :(")
-						end
-					end
-				end
-			end
+			tell_error(err)
+			--errors[file] = err
+			return false
 		end
-	end
+
+		local item = f()
+		if not (item and item.data) then
+			tell('Item could not load - improper data structure.')
+			return false
+		elseif item.devmode and item.devmode ~= Pacdam.Data.devmode then
+			tell('Item could not load - devmode only!')
+			return false
+		end
+
+		if item.categories and MadLib.list_matches_one(item.categories, function(c)
+			return PacdamConfig[v] ~= nil and PacdamConfig[v] == false
+		end) then
+			tell('Item '..(item.data and item.data.key or 'UNKNOWN')..' could not load - configs turned off.')
+			return false
+		end
+
+		local data = item.data
+		if data.object_type then
+			if func then func(item.data) end
+			tell('Attempting to load item '..(item.data and item.data.key or 'UNKNOWN')..'.')
+			SMODS[data.object_type](data)
+		end
+	end)
+end
+
+local function loop_directories(tbl, path)
+    path = path or {}
+    tell('Loading Directories')
+	print(path)
+	MadLib.loop_table(tbl, function(key,value)
+        if type(value) ~= "table" then return false end
+		if value.pass ~= nil and value.pass() == true then
+			tell("Loading folder at: " .. table.concat(path, ".") .. (next(path) and "." or "") .. key)
+			local final_path = 'items/'
+			MadLib.loop_func(path, function(v,i)
+				final_path = final_path .. v .. '/'
+			end)
+			load_items(final_path..key..'/',value.func)
+		else
+			table.insert(path, key)
+			loop_directories(value, path)
+			table.remove(path)
+		end
+	end)
+end
+
+Pacdam.JokerIds = {} -- joker ids
+Pacdam.Directories = {
+	['jokers'] = {
+        pass = function()
+            return true
+        end,
+        func = function(d) -- add joker id to joker ids
+            d.pools = { ['MadcapJoker'] = true }
+            d.blueprint_compat  = d.blueprint_compat or true
+            d.eternal_compat    = d.eternal_compat or true
+            d.perishable_compat = d.perishable_compat or true
+            d.unlocked          = d.unlocked or true
+            d.discovered        = d.discovered or true
+        end
+    },
+	['consumeables'] = {
+        ['tarot'] = {
+            pass = function()
+                return true
+            end
+        },
+        ['spectral'] = {
+            pass = function()
+                return true
+            end
+        },
+        ['planet'] = {
+            pass = function()
+                return true
+            end
+        }
+	},
+	['enhancements'] = {
+        pass = function()
+            return true
+        end
+	},
+	['editions'] = {
+		pass = function()
+			return true
+		end
+	},
+	['stickers']	= {
+		pass = function()
+			return true
+		end
+	},
+	['tags'] = {
+		pass = function()
+			return true
+		end
+	},
+	['blinds'] = {
+		pass = function()
+			return true
+		end
+	},
+}
+loop_directories(Pacdam.Directories)
+
+local get_full_score_mod = MadLib.get_full_score
+
+MadLib.get_full_score = function(hand_chips, mult, pow)
+    tell(tostring(hand_chips) .. ' ^ ' .. tostring(pow) .. ' is ' .. tostring(hand_chips^pow) .. '.')
+    return get_full_score_mod(hand_chips^pow, mult)
 end

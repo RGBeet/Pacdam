@@ -3,24 +3,6 @@ version = "1.0"
 dump_lua = true
 priority = 0
 
-# Adds the pow box to the left side game UI
-[[patches]]
-[patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = '''              {n=G.UIT.R, config={align = "cm", minh = 1, padding = 0.1}, nodes={'''
-position = "before"
-match_indent = false
-payload = """
-              {n=G.UIT.R, config={align = "cm", minh = 0.5, draw_layer = 1}, nodes={
-                {n=G.UIT.C, config={align = "cr", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.POW, id = 'hand_pow_area', emboss = 0.05, padding = 0.03}, nodes={
-                    {n=G.UIT.O, config={func = 'flame_handler',no_role = true, id = 'flame_pow', object = Moveable(0,0,0,0), w = 0, h = 0}},
-                    {n=G.UIT.O, config={id = 'hand_pow', func = 'hand_pow_UI_set',object = DynaText({string = {{ref_table = G.GAME.current_round.current_hand, ref_value = "pow_text"}}, colours = {G.C.UI.TEXT_LIGHT}, font = G.LANGUAGES['en-us'].font, shadow = true, float = true, scale = scale*1.4})}},
-                    {n=G.UIT.B, config={w=0.1,h=0.1}},
-                }},
-                {n=G.UIT.C, config={align = "cm", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.CLEAR, id = 'hand_pow_empty', emboss = 0.05}},
-              }},"""
-
-
 # Makes the chip total render over flames
 [[patches]]
 [patches.pattern]
@@ -31,7 +13,6 @@ overwrite = true
 match_indent = true
 payload = """{n=G.UIT.R, config={align = "cm", minh = 1.1, draw_layer = 2}, nodes={"""
 
-
 # Sets up variable in G.hand_text_area for pow UI to reference
 [[patches]]
 [patches.pattern]
@@ -40,7 +21,6 @@ pattern = '''chips = self.HUD:get_UIE_by_ID('hand_chips'),'''
 position = "before"
 match_indent = true
 payload = """pow = self.HUD:get_UIE_by_ID('hand_pow'),"""
-
 
 # Sets up pow variables for G.GAME.current_round.current_hand
 [[patches]]
@@ -59,27 +39,40 @@ payload = """
 [patches.pattern]
 target = "functions/common_events.lua"
 pattern = '''
-elseif (eval_type == 'x_mult') or (eval_type == 'h_x_mult') then 
+elseif (eval_type == 'x_mult') or (eval_type == 'h_x_mult') then
 '''
 position = "before"
 match_indent = true
 payload = """
-elseif (eval_type == 'pow') or (eval_type == 'h_pow') then 
-    sound = 'rgpd_hit'
+elseif (eval_type == 'pow') or (eval_type == 'h_pow') then
+    sound = 'rgpd_pow_hit'
     amt = amt
     text = localize{type='variable',key='a_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
     colour = G.C.POW
     config.type = 'fade'
     config.scale = 0.7
-elseif (eval_type == 'pow_decay') then 
+elseif (eval_type == 'pow_decay') then
     sound = 'cancel'
     amt = amt
     text = localize{type='variable',key='a_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
     colour = G.C.POW
     config.type = 'fade'
     config.scale = 0.7
+elseif (eval_type == 'x_pow') or (eval_type == 'h_x_pow') then
+    sound = 'rgpd_pow_hit'
+    amt = amt
+    text = localize{type='variable',key='a_xpow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
+    colour = G.C.POW
+    config.type = 'fade'
+    config.scale = 0.7
+elseif (eval_type == 'x_pow_decay') then
+    sound = 'cancel'
+    amt = amt
+    text = localize{type='variable',key='ax_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
+    colour = G.C.POW
+    config.type = 'fade'
+    config.scale = 0.7
 """
-
 
 # Adds the code in update_hand_text to update the pow text UI
 [[patches]]
@@ -101,10 +94,10 @@ payload = """
             if type(vals.pow) == 'string' then delta = vals.pow end
             G.GAME.current_round.current_hand.pow = vals.pow
             G.hand_text_area.pow:update(0)
-            if vals.StatusText then 
+            if vals.StatusText then
                 attention_text({
                     text =delta,
-                    scale = 0.8, 
+                    scale = 0.8,
                     hold = 1,
                     cover = G.hand_text_area.pow.parent,
                     cover_colour = mix_colours(G.C.GREEN, col, 0.1),
@@ -116,35 +109,33 @@ payload = """
         end
 """
 
-
 # Adds a brief visual animation for the pow getting applied to the chips before the chips and mult are multiplied for final chip amount
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"
 pattern = '''
-G.E_MANAGER:add_event(Event({
+MadLib.event({
     trigger = 'after',delay = 0.4,
     func = (function()  update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 0, chip_total = math.floor(hand_chips*mult), level = '', handname = ''});play_sound('button', 0.9, 0.6);return true end)
-  }))'''
+  })'''
 position = "before"
 match_indent = true
 payload = """
 if pow ~= 1 then
-  G.E_MANAGER:add_event(Event({
+  MadLib.event({
       trigger = 'after',delay = 0.4,
-      func = function()  
+      func = function()
         update_hand_text({delay = 0, immediate = true}, {chips = Pacdam.Funcs.calc_chips(hand_chips, 1, pow), pow = 1, level = '', handname = ''})
         play_sound('button', 0.9, 0.6)
         G.E_MANAGER:add_event(Event({
           func = function() pow = 1;return true end
         }))
-        return true 
+        return true
       end
-    }))
+    })
   delay(1)
 end
 """
-
 
 # Replaces final hand calculations in evaluate play with one that accounts for pow
 [[patches]]
@@ -154,7 +145,22 @@ pattern = 'hand_chips\*mult'
 position = "at"
 overwrite = true
 match_indent = false
-payload = "Pacdam.Funcs.calc_chips(hand_chips, mult, pow)"
+payload = """Pacdam.Funcs.calc_chips(hand_chips, mult, pow)"""
+
+# Fix the pow at the end!
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''check_and_set_high_score('hand', Pacdam.Funcs.calc_chips(hand_chips, mult, pow))'''
+position = "before"
+overwrite = true
+match_indent = false
+payload = '''G.E_MANAGER:add_event(Event({
+        trigger = 'immediate',delay = 0.4,
+        func = (function()  update_hand_text({delay = 0, immediate = true}, { pow = 1.00 }); return true end)
+      }))'''
+
+
 
 
 # Adds support for pow on playing cards
@@ -171,7 +177,6 @@ if pow ~= 0 then
 end
 
 """
-
 
 # Adds pow to playing card loc_vars
 [[patches]]
@@ -196,48 +201,35 @@ if specific_vars and specific_vars.bonus_pow then
 end
 """
 
-
 # Sets pow to 1 if hand is debuffed
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"
-pattern = '''hand_chips = mod_chips(0)'''
-position = "after"
+pattern = '''local hand_text_set = false'''
+position = "before"
 match_indent = true
 payload = """pow = 1"""
 
-
-# Adds correct pow value to update_hand_text in evaluate_play
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"
-pattern = '''func = (function()  update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 0, chip_total = math.floor(hand_chips*mult), level = '', handname = ''});play_sound('button', 0.9, 0.6);return true end)'''
-position = "at"
+pattern = '''update_hand_text({immediate = true, nopulse = true, delay = 0}, {mult = 0, chips = 0, level = '', handname = ''})'''
+position = "after"
 overwrite = true
 match_indent = true
-payload = '''func = (function()  update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 0, pow = 1, chip_total = math.floor(Pacdam.Funcs.calc_chips(hand_chips, mult, pow)), level = '', handname = ''});play_sound('button', 0.9, 0.6);return true end)'''
+payload = '''update_hand_text({immediate = true, nopulse = true, delay = 0}, {pow = 1.00})'''
 
-
-# Makes negative chips work
 [[patches]]
 [patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.chips) == 'number' and G.GAME.current_round.current_hand.chips or 1)))) end'''
-position = "at"
+target = "functions/state_events.lua"
+pattern = '''SMODS.displayed_hand = nil'''
+position = "after"
 overwrite = true
 match_indent = true
-payload = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.chips) == 'number' and math.abs(G.GAME.current_round.current_hand.chips) or 1)))) end'''
-
-
-# Makes negative mult work
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.mult) == 'number' and G.GAME.current_round.current_hand.mult or 1)))) end'''
-position = "at"
-overwrite = true
-match_indent = true
-payload = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.mult) == 'number' and math.abs(G.GAME.current_round.current_hand.mult) or 1)))) end'''
+payload = '''G.E_MANAGER:add_event(Event({
+        trigger = 'after',delay = 0.4,
+        func = (function()  update_hand_text({delay = 0, immediate = true}, {pow = 1.00}); play_sound('button', 0.9, 0.6); return true end)
+      }))'''
 
 
 # Replaces calculation for flame instensity with one that accounts for pow
@@ -289,53 +281,12 @@ overwrite = true
 payload = """e.config.object = Sprite(0, 0, v.w and v.w or 2.5, v.h and v.h or 2.5, G.ASSET_ATLAS["ui_1"], {x = 2, y = 0})"""
 
 
+# Allows for the width of the pow flame to be adjusted
 [[patches]]
 [patches.pattern]
-target = "functions/misc_functions.lua"
-pattern = '''legendary = G.C.RARITY[4],'''
+target = "functions/button_callbacks.lua"
+pattern = '''hand_chips = mod_chips(0)'''
 position = "after"
 match_indent = true
 overwrite = true
-payload = '''pow = G.C.POW,'''
-
-# Allows for the pow flame to be shifted down a bit
-# [[patches]]
-# [patches.pattern]
-# target = "functions/button_callbacks.lua"
-# pattern = '''
-# e.config.object:set_alignment({
-#     major = e.parent,
-#     type = 'bmi',
-#     offset = {x=0,y=0},
-#     xy_bond = 'Weak'
-# })'''
-# position = "at"
-# match_indent = true
-# overwrite = true
-# payload = """
-# e.config.object:set_alignment({
-#     major = e.parent,
-#     type = 'bmi',
-#     offset = {x=0,y=v.y and v.y or 0},
-#     xy_bond = 'Weak'
-# })"""
-
-
-# [[patches]]
-# [patches.pattern]
-# target = "functions/common_events.lua"
-# pattern = '''
-# local mult = card:get_chip_mult()
-# if mult ~= 0 then
-#     ret.playing_card.mult = mult
-# end'''
-# position = "after"
-# match_indent = true
-# payload = """
-
-# local pow = card:get_chip_pow()
-# if pow ~= 0 then
-#     ret.playing_card.pow = pow
-# end
-# """
-
+payload = '''pow = 1.00'''

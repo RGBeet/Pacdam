@@ -3,7 +3,7 @@
 	"name": "Pacdam",
 	"display_name": "Pacdam",
 	"author": ["RGBeet", "chaseoqueso"],
-	"description": "A Powerful fork. Credit to chaseoqueso for the original mod,",
+	"description": "A Powerful fork. Credit to chaseoqueso for the original mod.",
 	"prefix": "rgpd",
 	"main_file": "main.lua",
 	"priority": 42001,

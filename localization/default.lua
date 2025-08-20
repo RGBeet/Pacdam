@@ -1,15 +1,35 @@
 return {
     descriptions = {
-        Edition = {
-            e_pow_glow = {
-                name = "Glow in the Dark",
+        Enhanced = {
+			m_rgpd_vis = {
+                name = "Vis Card",
                 text = {
-                    "Gives {C:pow}+#1#{} Pow"
+                    "{C:pow}+#1#{} Pow",
+                    "{C:mult}-#2#{} Mult"
+                }
+            },
+			m_rgpd_flux = {
+                name = "Flux Card",
+                text = {
+                    "{C:pow}+#1#{} Pow",
+                    "while this card",
+                    "stays in hand",
+                    "{C:green}#2# in #3#{} chance to",
+                    "destroy card",
+                    "upon activation",
+                }
+            }
+        },
+        Edition = {
+            e_rgpd_glow = {
+                name = "Luminous",
+                text = {
+                    "{C:pow}+#1#{} Pow"
                 }
             }
         },
         Fish = {
-            c_pow_fish = {
+            c_rgpd_fish = {
                 name = "Fish",
                 text = {
                     "Draw a card",
@@ -74,8 +94,8 @@ return {
                     "{C:inactive}(Must have room){}"
                 },
             },
-            j_rgpd_countess = {
-                name = "Countess",
+            j_rgpd_lich = {
+                name = "Lich",
                 text = {
                     "Adds a random",
                     "{C:dark_edition}Negative{} {V:1}Tethered{}",
@@ -115,20 +135,21 @@ return {
                     "Swaps {C:chips}Chips{} and {C:mult}Mult{}"
                 },
             },
-            j_rgpd_power_level = {
-                name = "power_level",
+            j_rgpd_joku = {
+                name = "Joku",
                 text = {
                     "This joker gains {C:pow}+#1#{} Pow",
                     "per {C:attention}consecutive{} hand that",
                     "exceeds required chips",
                     "{C:inactive}(Currently {C:pow}+#2#{} {C:inactive}Pow)",
-                    "\"It's over 9000!\"",
+                    "{C:inactive}What does the scouter say",
+                    "{C:inactive}about his {C:attention, E:1}power level?!"
                 },
             },
             j_rgpd_power_bluff = {
                 name = "Power Bluff",
                 text = {
-                    "{C:pow}+#1#{} Pow, {C:red}-#2#{} Mult",
+                    "{C:pow}+#1#{} Pow, {C:red}#2#{} Mult",
                     "Start with {C:attention}1{} hand"
                 },
             },
@@ -137,7 +158,8 @@ return {
                 text = {
                     "Every played {C:attention}card",
                     "permanently gains",
-                    "{C:pow}+#1#{} Pow, {C:red}-#2#{} Mult",
+                    "{C:pow}+#1#{} Pow",
+                    "{C:red}#2#{} Mult",
                     "when scored"
                 },
             },
@@ -164,53 +186,114 @@ return {
                     "is selected"
                 },
             },
+            j_rgpd_joker_cubed = {
+                name = "Joker Cubed",
+                text = {
+                    "Scored {C:attention}square number{} ranks",
+                    "give {C:pow}+#1#{} Pow",
+                },
+            },
+            j_rgpd_pow_block= {
+                name = "POW! Block",
+                text = {
+                    "If {C:attention}final{} hand",
+                    "does not clear blind,",
+                    "this Joker",
+                    "gives {C:pow}+#1#{} Pow",
+                    "and {C:red}self destructs{}"
+                },
+            },
+            j_rgpd_powitch = {
+                name = "Powitch",
+                text = {
+                    "{C:pow}+#1#{} Pow",
+                    "{C:pow}-#2#{} Pow for every",
+                    "{C:attention}#4#{} hands played",
+                    "{C:inactive}(#3#/#4# hands played)",
+                },
+            },
         },
-        Other = {
-            card_pow = {
+        Tarot = {
+			c_rgpd_growth = {
+				name = "Growth",
                 text = {
-                    "{C:pow}+#1#{} Pow"
+                    'Enhances up to {C:attention}#1#{}',
+                    'selected cards to',
+                    '{C:attention}#2#s',
                 }
-            },
-            card_decay = {
+			},
+			c_rgpd_deluge = {
+				name = "Deluge",
                 text = {
-                    "{X:pow,C:white}-#1#{} Pow"
+                    'Enhances up to {C:attention}#1#{}',
+                    'selected cards to',
+                    '{C:attention}#2#s',
                 }
-            },
-            pow_tethered = {
-                name = "Tethered",
-                text = {
-                    "Can't be sold or",
-                    "destroyed. Loses",
-                    "{V:1}Tethered{} and becomes",
-                    "Debuffed if {C:attention}Lich{}",
-                    "is sold or destroyed."
-                }
-            }
+			},
         },
         Spectral = {
-            c_pow_geist = {
+            c_rgpd_geist = {
                 name = "Geist",
                 text = {
                     "Apply {C:dark_edition}#1#{}",
-                    "effect to {C:attention}1{} selected",
-                    "card in hand"
+                    "effect to {C:attention}#2#{} selected",
+                    "card(s) in hand"
+                }
+            }
+        },
+        Rotarot = {
+			c_rgpd_rot_vis = {
+				name = "Growth!",
+                text = {
+                    'Enhances up to {C:attention}#1#{}',
+                    'selected cards to',
+                    '{C:attention}#2#s'
+                }
+			},
+			c_rgpd_rot_deluge = {
+				name = "Deluge!",
+                text = {
+                    'Enhances up to {C:attention}#1#{}',
+                    'selected cards to',
+                    '{C:attention}#2#s'
+                }
+			},
+        },
+        Other = {
+            card_pow = {
+                text = { "{C:pow}+#1#{} Pow" }
+            },
+            card_decay = {
+                text = { "{X:pow,C:white}-#1#{} Pow" }
+            },
+            rgpd_tethered = {
+                name = "Tethered",
+                text = {
+                    "Can not be sold",
+                    "nor destroyed",
+                    "If parent card is",
+                    "sold or destroyed,",
+                    "Debuff this card and",
+                    "remove {V:1}Tethered{} sticker"
                 }
             }
         },
     },
     misc = {
         dictionary = {
-            k_fish = "Fish",
-            b_fish_cards = "Fish Cards",
+            k_fish          = "Fish",
+            b_fish_cards    = "Fish Cards",
         },
         labels = {
-            pow_tethered = "Tethered",
-            pow_glow = "Glow in the Dark"
+            rgpd_tethered   = "Tethered",
+            rgpd_glow       = "Luminous"
         },
         v_dictionary={
-            a_pow="+#1# Pow",
-            a_pow_minus="-#1# Pow",
-            a_decay = "Decay",
+            a_pow           = "+#1# Pow",
+            a_pow_minus     = "-#1# Pow",
+            a_xpow          = "X#1# Pow",
+            a_xpow_minus    = "-X#1# Pow",
+            a_decay         = "Decay",
         }
     }
 }

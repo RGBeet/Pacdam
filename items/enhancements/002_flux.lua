@@ -1,0 +1,29 @@
+return {
+    categories = {
+        'Enhancements',
+    },
+    data = {
+        object_type = "Enhancement",
+        key     = 'flux',
+        atlas   = 'enhancements',
+        pos     = MLIB.coords(0,1),
+        config  = { extra = { pow = 0.10, odds = 12 } },
+        loc_vars = function(self, info_queue, card)
+            return MadLib.collect_vars(card.ability.extra.pow, card.ability.extra.odds)
+        end,
+        calculate = function(self, card, context)
+            if context.destroy_card and context.cardarea == G.hand and context.destroy_card == card and
+                SMODS.pseudorandom_probability(card, 'flux', 1, card.ability.extra.odds) then
+                card.glass_trigger = true -- SMODS addition
+                return { remove = true }
+            end
+
+            if context.main_scoring and context.cardarea == G.hand then
+                return {
+                    pow     = card.ability.extra.pow,
+                    card    = card
+                }
+            end
+        end,
+    }
+}
