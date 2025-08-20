@@ -8,8 +8,8 @@ SMODS.ConsumableType{
 SMODS.Consumable({
     key         = "fish",
     set         = "Fish",
-    atlas       = "Extras",
-    pos         = get_pos(0,0),
+    atlas       = "extras",
+    pos         = MLIB.coords(0,0),
     no_collection = true,
     config = { extra = { num_fish = 0, max_fish = 5 } },
     loc_vars = function (self, info_queue, card)

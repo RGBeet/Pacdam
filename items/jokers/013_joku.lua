@@ -15,8 +15,8 @@ return {
         update = function(self, card, dt)
             if not G.jokers then return end
             local should_animate = not card.ability.extra.animate
-                and MadLib.number_greater_than(G.ARGS.score_intensity.earned_score, G.ARGS.score_intensity.required_score, true)
-                and MadLib.number_greater_than(G.ARGS.score_intensity.required_score, 0)
+                and to_big(G.ARGS.score_intensity.earned_score) > to_big(G.ARGS.score_intensity.required_score)
+                and to_big(G.ARGS.score_intensity.required_score) > to_big(0)
             if should_animate then
                 card.ability.extra.animate = true
                 juice_card_until(card, function () return card.ability.extra.animate end)
