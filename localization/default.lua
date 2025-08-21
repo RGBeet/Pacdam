@@ -226,7 +226,7 @@ return {
 				name = "Deluge",
                 text = {
                     'Enhances up to {C:attention}#1#{}',
-                    'selected cards to',
+                    'selected card(s) to',
                     '{C:attention}#2#s',
                 }
 			},
