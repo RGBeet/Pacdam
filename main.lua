@@ -44,6 +44,11 @@ SMODS.Atlas{
     py = 95
 }
 
+SMODS.Sound {
+	key = 'e_glow',
+	path = 'e_glow.ogg',
+}
+
 SMODS.Sound{
     key = "pow_hit",
     path = "pow_hit.ogg"
