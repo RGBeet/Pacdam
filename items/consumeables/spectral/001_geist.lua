@@ -12,7 +12,10 @@ return {
         config = { edition = 'e_rgpd_glow', max_highlighted = 1 },
         loc_vars = function(self, info_queue, card)
             MadLib.add_to_queue(G.P_CENTERS[card.ability.edition])
-            return MadLib.collect_vars(lichG.localization.descriptions.Enhaned[card.ability.mod_conv].name, number_format(card.ability.max_highlighted or 1))
+            return MadLib.collect_vars(
+				G.localization.descriptions.Edition[card.ability.edition].name,
+				number_format(card.ability.max_highlighted or 1)
+			)
         end,
         can_use = function(self, card)
             return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
