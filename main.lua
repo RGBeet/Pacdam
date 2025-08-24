@@ -49,6 +49,11 @@ SMODS.Sound{
     path = "pow_hit.ogg"
 }
 
+SMODS.Sound{
+    key = "e_glow",
+    path = "e_glow.ogg"
+}
+
 SMODS.Shader{ key = 'glow',  path = 'glow.fs' }
 SMODS.Shader{ key = 'glowbloom',  path = 'glowbloom.fs' }
 

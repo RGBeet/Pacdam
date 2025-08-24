@@ -9,7 +9,7 @@ return {
         pos     = MLIB.coords(0,0),
         config  = { extra = { pow = 0.05 }, immutable = { mult = 1 } },
         loc_vars = function(self, info_queue, card)
-            return MadLib.collect_vars(card.ability.extra.pow, card.ability.immutable.mult)
+            return MadLib.collect_vars(number_format(card.ability.extra.pow), number_format(card.ability.immutable.mult))
         end,
         calculate = function(self, card, context)
             if context.cardarea == G.play and context.main_scoring then
@@ -20,8 +20,5 @@ return {
                 }
             end
         end,
-        draw = function(self, card, layer)
-            card.children.center:draw_shader("rgpd_glowbloom", nil, card.ARGS.send_to_shader)
-        end
     }
 }
