@@ -246,10 +246,11 @@ return {
         end,
         add_to_deck = function (self, card, from_debuff)
             if not from_debuff then
+                G.GAME.Num_Frogs = (G.GAME.Num_Frogs or 0) + 1
                 if SMODS.pseudorandom_probability(card, 'frog', 1, card.ability.extra.odds) then
                     card.ability.extra.ribbit = "...Ribbit?"
                 end
-                G.GAME.pow_frog = (G.GAME.pow_frog or 0) + 1
+                --G.GAME.pow_frog = (G.GAME.pow_frog or 0) + 1
                 card.ability.extra.frog_id = G.GAME.pow_frog
                 local area = FrogCardArea(
                     0, 0,
@@ -264,7 +265,9 @@ return {
             end
         end,
         load = function (self, card, card_table, other_card)
-            local area = G["pow_frogarea_"..card_table.ability.extra.frog_id]
+            local id = card_table and card_table.ability and card_table.ability.extra and card_table.ability.extra.frog_id or 1
+            local area = G["pow_frogarea_".. tostring(id)]
+            if not area then return false end
             card_table.ability.extra.cardarea = area
             area.parent = card
             area:set_alignment{major = card, type = "cm", offset = {x=0, y=0.1}}
