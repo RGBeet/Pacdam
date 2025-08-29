@@ -262,7 +262,7 @@ payload = """
   pow = {
     id = 'flame_pow',
     arg_tab = 'pow_flames',
-    colour = G.C.POW,
+    colour = G.C.UI_POW,
     accent = G.C.UI_POWLICK,
     y = 0,
     w = 1.75,
@@ -290,3 +290,13 @@ position = "after"
 match_indent = true
 overwrite = true
 payload = '''pow = 1.00'''
+
+# idk bitch
+[[patches]]
+[patches.pattern]
+target = "globals.lua"
+pattern = '''G.C.UI_MULT = copy_table(G.C.RED)'''
+position = "after"
+match_indent = true
+overwrite = true
+payload = '''G.C.UI_POW = HEX('57C185')'''

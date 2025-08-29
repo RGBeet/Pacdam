@@ -1,5 +1,19 @@
 return {
     descriptions = {
+        Back = {
+			b_rgpd_powerful = {
+				name = "Powerful Deck",
+				text = {
+                    "All hands gain",
+                    "{C:pow}+#1#{} Pow",
+                    "and {X:mult, C:white}X#2#{} Mult",
+                    "at end of scoring",
+                    "{X:orange,C:white}#3#{} blind size",
+                    "{C:pow}Pacdam{} cards are",
+                    "{C:attention}X#4#{} more likely to appear"
+				},
+			},
+        },
         Enhanced = {
 			m_rgpd_vis = {
                 name = "Vis Card",
@@ -16,7 +30,7 @@ return {
                     "stays in hand",
                     "{C:green}#2# in #3#{} chance to",
                     "destroy card",
-                    "upon activation",
+                    "after activation",
                 }
             }
         },

@@ -24,6 +24,13 @@ SMODS.Atlas{
 }
 
 SMODS.Atlas{
+    key = "decks",
+    path = "decks.png",
+    px = 71,
+    py = 95
+}
+
+SMODS.Atlas{
     key = "modicon",
     path = "modicon.png",
     px = 34,
@@ -64,6 +71,7 @@ SMODS.Shader{ key = 'glowbloom',  path = 'glowbloom.fs' }
 G.C.POW         = HEX('57C185')
 G.C.FISH        = HEX("308fe3")
 G.C.TETHERED    = HEX('248571')
+
 POW = Pacdam
 
 -- rarity boosters
@@ -302,7 +310,7 @@ function create_UIBox_HUD()
     local hands_ui = orig.nodes[1].nodes[1].nodes[4]
 
     table.insert(hands_ui.nodes[1].nodes, 2, {n=G.UIT.R, config={align = "cm", minh = 0.5, draw_layer = 1}, nodes={
-        {n=G.UIT.C, config={align = "cr", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.POW, id = 'hand_pow_area', emboss = 0.05, padding = 0.03}, nodes={
+        {n=G.UIT.C, config={align = "cr", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.UI_POW, id = 'hand_pow_area', emboss = 0.05, padding = 0.03}, nodes={
             {n=G.UIT.O, config={func = 'flame_handler',no_role = true, id = 'flame_pow', object = Moveable(0,0,0,0), w = 0, h = 0}},
             {n=G.UIT.O, config={id = 'hand_pow', func = 'hand_pow_UI_set',object = DynaText({string = {{ref_table = G.GAME.current_round.current_hand, ref_value = "pow_text"}}, colours = {G.C.UI.TEXT_LIGHT}, font = G.LANGUAGES['en-us'].font, shadow = true, float = true, scale = 0.5, r = 0.4*1.4})}},
             {n=G.UIT.B, config={w=0.1,h=0.1}},
@@ -420,6 +428,11 @@ Pacdam.Directories = {
                 return true
             end
         }
+	},
+	['decks'] = {
+        pass = function()
+            return true
+        end
 	},
 	['enhancements'] = {
         pass = function()
