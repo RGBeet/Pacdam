@@ -1,302 +1,104 @@
 [manifest]
-version = "1.0"
+version = "1.0.0"
 dump_lua = true
-priority = 0
+priority = 1
 
-# Makes the chip total render over flames
 [[patches]]
 [patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = """{n=G.UIT.R, config={align = "cm", minh = 1.1}, nodes={"""
-position = "at"
-overwrite = true
-match_indent = true
-payload = """{n=G.UIT.R, config={align = "cm", minh = 1.1, draw_layer = 2}, nodes={"""
-
-# Sets up variable in G.hand_text_area for pow UI to reference
-[[patches]]
-[patches.pattern]
-target = "game.lua"
-pattern = '''chips = self.HUD:get_UIE_by_ID('hand_chips'),'''
-position = "before"
-match_indent = true
-payload = """pow = self.HUD:get_UIE_by_ID('hand_pow'),"""
-
-# Sets up pow variables for G.GAME.current_round.current_hand
-[[patches]]
-[patches.pattern]
-target = "game.lua"
-pattern = '''current_hand = {'''
-position = "after"
-match_indent = true
-payload = """
-    pow = 1,
-    pow_text = '1',
-"""
-
-# Adds the card_eval_status_text under jokers that return a pow or decay value
-[[patches]]
-[patches.pattern]
-target = "functions/common_events.lua"
-pattern = '''
-elseif (eval_type == 'x_mult') or (eval_type == 'h_x_mult') then
-'''
-position = "before"
-match_indent = true
-payload = """
-elseif (eval_type == 'pow') or (eval_type == 'h_pow') then
-    sound = 'rgpd_pow_hit'
-    amt = amt
-    text = localize{type='variable',key='a_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
-    colour = G.C.POW
-    config.type = 'fade'
-    config.scale = 0.7
-elseif (eval_type == 'pow_decay') then
-    sound = 'cancel'
-    amt = amt
-    text = localize{type='variable',key='a_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
-    colour = G.C.POW
-    config.type = 'fade'
-    config.scale = 0.7
-elseif (eval_type == 'x_pow') or (eval_type == 'h_x_pow') then
-    sound = 'rgpd_pow_hit'
-    amt = amt
-    text = localize{type='variable',key='a_xpow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
-    colour = G.C.POW
-    config.type = 'fade'
-    config.scale = 0.7
-elseif (eval_type == 'x_pow_decay') then
-    sound = 'cancel'
-    amt = amt
-    text = localize{type='variable',key='ax_pow'..(amt<0 and '_minus' or ''),vars={math.abs(amt)}}
-    colour = G.C.POW
-    config.type = 'fade'
-    config.scale = 0.7
-"""
-
-# Adds the code in update_hand_text to update the pow text UI
-[[patches]]
-[patches.pattern]
-target = "functions/common_events.lua"
-pattern = '''
-    if not G.TAROT_INTERRUPT then G.hand_text_area.mult:juice_up() end
-end
-'''
-position = "after"
-match_indent = false
-payload = """
-        if vals.pow and G.GAME.current_round.current_hand.pow ~= vals.pow then
-            local delta = (type(vals.pow) == 'number' and type(G.GAME.current_round.current_hand.pow) == 'number') and (vals.pow - G.GAME.current_round.current_hand.pow) or 0
-            if delta < 0 then delta = ''..delta; col = G.C.RED
-            elseif delta > 0 then delta = '+'..delta
-            else delta = ''..delta
-            end
-            if type(vals.pow) == 'string' then delta = vals.pow end
-            G.GAME.current_round.current_hand.pow = vals.pow
-            G.hand_text_area.pow:update(0)
-            if vals.StatusText then
-                attention_text({
-                    text =delta,
-                    scale = 0.8,
-                    hold = 1,
-                    cover = G.hand_text_area.pow.parent,
-                    cover_colour = mix_colours(G.C.GREEN, col, 0.1),
-                    emboss = 0.05,
-                    align = 'cm',
-                    cover_align = 'cr'
-                })
-            end
-        end
-"""
-
-# Adds a brief visual animation for the pow getting applied to the chips before the chips and mult are multiplied for final chip amount
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = '''
-MadLib.event({
-    trigger = 'after',delay = 0.4,
-    func = (function()  update_hand_text({delay = 0, immediate = true}, {mult = 0, chips = 0, chip_total = math.floor(hand_chips*mult), level = '', handname = ''});play_sound('button', 0.9, 0.6);return true end)
-  })'''
-position = "before"
-match_indent = true
-payload = """
-if pow ~= 1 then
-  MadLib.event({
-      trigger = 'after',delay = 0.4,
-      func = function()
-        update_hand_text({delay = 0, immediate = true}, {chips = Pacdam.Funcs.calc_chips(hand_chips, 1, pow), pow = 1, level = '', handname = ''})
-        play_sound('button', 0.9, 0.6)
-        G.E_MANAGER:add_event(Event({
-          func = function() pow = 1;return true end
-        }))
-        return true
-      end
-    })
-  delay(1)
-end
-"""
-
-# Replaces final hand calculations in evaluate play with one that accounts for pow
-[[patches]]
-[patches.regex]
-target = "functions/state_events.lua"
-pattern = 'hand_chips\*mult'
-position = "at"
-overwrite = true
-match_indent = false
-payload = """Pacdam.Funcs.calc_chips(hand_chips, mult, pow)"""
-
-# Fix the pow at the end!
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = '''check_and_set_high_score('hand', Pacdam.Funcs.calc_chips(hand_chips, mult, pow))'''
-position = "before"
-overwrite = true
-match_indent = false
-payload = '''G.E_MANAGER:add_event(Event({
-        trigger = 'immediate',delay = 0.4,
-        func = (function()  update_hand_text({delay = 0, immediate = true}, { pow = 1.00 }); return true end)
-      }))'''
-
-
-
-
-# Adds support for pow on playing cards
-[[patches]]
-[patches.pattern]
-target = "functions/common_events.lua"
+target = 'functions/common_events.lua'
 pattern = '''-- TARGET: main scoring on played cards'''
-position = "before"
-match_indent = true
-payload = """
-local pow = card:get_pow_bonus()
-if pow ~= 0 then
-    ret.playing_card.pow = pow
+position = 'after'
+payload = '''
+local a_pow = card:get_pow_bonus()
+if a_pow > 0 then
+	ret.playing_card.pow = a_pow
 end
+local x_pow = card:get_xpow_bonus()
+if x_pow > 0 then
+	ret.playing_card.x_pow = x_pow
+end
+'''
+match_indent = true
 
-"""
-
-# Adds pow to playing card loc_vars
 [[patches]]
 [patches.pattern]
-target = "card.lua"
-pattern = '''bonus_h_chips = self.ability.perma_h_chips ~= 0 and self.ability.perma_h_chips or nil,'''
-position = "before"
+target = 'card.lua'
+pattern = '''bonus_chips = bonus_chips ~= 0 and bonus_chips or nil,'''
+position = 'after'
+payload = '''
+bonus_pow     = (self.ability.perma_pow and self.ability.perma_pow ~= 0) and (self.ability.perma_pow) or nil,
+bonus_x_pow   = (self.ability.perma_x_pow and self.ability.perma_x_pow ~= 0) and (self.ability.perma_x_pow + 1) or nil,
+'''
 match_indent = true
-payload = """bonus_pow = self.ability.perma_pow ~= 0 and self.ability.perma_pow or nil,"""
 
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''if specific_vars and specific_vars.bonus_p_dollars then'''
+position = 'before'
+payload = '''
+if specific_vars and specific_vars.bonus_pow then
+	localize{type = 'other', key = 'card_extra_pow', nodes = desc_nodes, vars = {specific_vars.bonus_pow}}
+end
+if specific_vars and specific_vars.bonus_x_pow then
+	localize{type = 'other', key = 'card_extra_x_pow', nodes = desc_nodes, vars = {specific_vars.bonus_x_pow}}
+end
+'''
+match_indent = true
 
-# Adds pow to playing card UIBox
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = '''if specific_vars and specific_vars.bonus_repetitions then'''
+position = 'before'
+payload = '''
+if specific_vars and specific_vars.bonus_pow then
+	localize{type = 'other', key = 'card_extra_pow', nodes = desc_nodes, vars = {specific_vars.bonus_pow}}
+end
+if specific_vars and specific_vars.bonus_x_pow then
+	localize{type = 'other', key = 'card_extra_x_pow', nodes = desc_nodes, vars = {specific_vars.bonus_x_pow}}
+end
+'''
+match_indent = true
+
 [[patches]]
 [patches.pattern]
 target = "functions/common_events.lua"
-pattern = '''if specific_vars and specific_vars.bonus_h_chips then'''
+pattern = "elseif eval_type == 'dollars' then"
 position = "before"
+payload = '''
+elseif eval_type == 'pow' then
+	sound = 'rgpd_pow_hit'
+	amt = amt
+	text = '+' .. amt
+	colour = G.C.POW
+	config.type = 'fade'
+	config.scale = 0.7
+elseif eval_type == 'x_pow' then
+	sound = 'rgpd_xpow_hit'
+	amt = amt
+	text = 'X' .. amt
+	colour = G.C.POW
+	config.type = 'fade'
+	config.scale = 0.7
+'''
 match_indent = true
-payload = """
-if specific_vars and specific_vars.bonus_pow then
-    localize{type = 'other', key = 'card_pow', nodes = desc_nodes, vars = {specific_vars.bonus_pow}}
-end
-"""
-
-# Sets pow to 1 if hand is debuffed
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = '''local hand_text_set = false'''
-position = "before"
-match_indent = true
-payload = """pow = 1"""
-
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = '''update_hand_text({immediate = true, nopulse = true, delay = 0}, {mult = 0, chips = 0, level = '', handname = ''})'''
-position = "after"
-overwrite = true
-match_indent = true
-payload = '''update_hand_text({immediate = true, nopulse = true, delay = 0}, {pow = 1.00})'''
 
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"
-pattern = '''SMODS.displayed_hand = nil'''
+pattern = "SMODS.displaying_scoring = nil"
 position = "after"
-overwrite = true
+payload = '''pow = 1
+G.E_MANAGER:add_event(Event({
+    trigger = 'immediate',
+    func = (function() 
+	  	--quick fix
+		update_hand_text({ delay = 0.4 }, {
+			pow = 1 -- reset pow
+		})
+		return true 
+	end)
+}))'''
 match_indent = true
-payload = '''G.E_MANAGER:add_event(Event({
-        trigger = 'after',delay = 0.4,
-        func = (function()  update_hand_text({delay = 0, immediate = true}, {pow = 1.00}); play_sound('button', 0.9, 0.6); return true end)
-      }))'''
 
-
-# Replaces calculation for flame instensity with one that accounts for pow
-[[patches]]
-[patches.pattern]
-target = "functions/misc_functions.lua"
-pattern = '''if type(G.GAME.current_round.current_hand.chips) ~= 'number' or type(G.GAME.current_round.current_hand.mult) ~= 'number' then
-    G.ARGS.score_intensity.earned_score = 0
-  else
-    G.ARGS.score_intensity.earned_score = G.GAME.current_round.current_hand.chips*G.GAME.current_round.current_hand.mult
-  end'''
-position = "at"
-overwrite = true
-match_indent = true
-payload = """if type(G.GAME.current_round.current_hand.chips) ~= 'number' or type(G.GAME.current_round.current_hand.mult) ~= 'number' or type(G.GAME.current_round.current_hand.pow) ~= 'number' then
-    G.ARGS.score_intensity.earned_score = 0
-  else
-    G.ARGS.score_intensity.earned_score = Pacdam.Funcs.calc_chips(G.GAME.current_round.current_hand.chips, G.GAME.current_round.current_hand.mult, G.GAME.current_round.current_hand.pow)
-  end"""
-
-
-# Adds data for the flame on the pow box
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = '''G.ARGS.flame_handler = G.ARGS.flame_handler or {'''
-position = "after"
-match_indent = true
-payload = """
-  pow = {
-    id = 'flame_pow',
-    arg_tab = 'pow_flames',
-    colour = G.C.UI_POW,
-    accent = G.C.UI_POWLICK,
-    y = 0,
-    w = 1.75,
-    h = 1.25
-  },"""
-
-
-# Allows for the width of the pow flame to be adjusted
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = '''e.config.object = Sprite(0, 0, 2.5, 2.5, G.ASSET_ATLAS["ui_1"], {x = 2, y = 0})'''
-position = "at"
-match_indent = true
-overwrite = true
-payload = """e.config.object = Sprite(0, 0, v.w and v.w or 2.5, v.h and v.h or 2.5, G.ASSET_ATLAS["ui_1"], {x = 2, y = 0})"""
-
-
-# Allows for the width of the pow flame to be adjusted
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = '''hand_chips = mod_chips(0)'''
-position = "after"
-match_indent = true
-overwrite = true
-payload = '''pow = 1.00'''
-
-# idk bitch
-[[patches]]
-[patches.pattern]
-target = "globals.lua"
-pattern = '''G.C.UI_MULT = copy_table(G.C.RED)'''
-position = "after"
-match_indent = true
-overwrite = true
-payload = '''G.C.UI_POW = HEX('57C185')'''

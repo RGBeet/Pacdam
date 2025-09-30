@@ -15,7 +15,9 @@ return {
                 local matches = MadLib.list_matches_one(MadLib.RankTypes['Square'], function(c)
                     return c == tostring(context.other_card:get_id())
                 end)
-                if matches then return MadLib.get_simple_score_data(MadLib.ScoreKeys.AddPow,card,card.ability.extra.pow) end
+                if matches then 
+                    return { pow = card.ability.extra.pow }
+                end
             end
         end,
         demicoloncompat = true,

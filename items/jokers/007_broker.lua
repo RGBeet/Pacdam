@@ -16,10 +16,7 @@ return {
         end,
         calculate = function(self, card, context)
             if context.joker_main or context.forcetrigger then
-                return {
-                    pow     = lenient_bignum(Pacdam.Funcs.calculate_broker_rate(card.ability.extra.pow_mod, card.ability.extra.money)),
-                    card    = card
-                }
+                return { pow = card.ability.extra.pow }
             end
         end,
         demicoloncompat = true,

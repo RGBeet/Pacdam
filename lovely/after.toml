@@ -13,72 +13,22 @@ payload = '''math.floor(MadLib.get_full_score(hand_chips,mult,pow))'''
 match_indent = true
 times = 10
 
-# Makes negative chips work
+# This also accounts for Paya's Terrible Addons, which does something similar.
 [[patches]]
 [patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.chips) == 'number' and G.GAME.current_round.current_hand.chips or 1)))) end'''
-position = "at"
-overwrite = true
+target = '=[SMODS _ "src/ui.lua"]'
+pattern = '''  local new_mult_text = number_format(G.GAME.current_round.current_hand[e.config.type] or SMODS.Scoring_Parameters[e.config.type].default_value)'''
+position = 'at'
+payload = '''local new_mult_text = number_format(G.GAME.current_round.current_hand[e.config.type] 
+  or SMODS.Scoring_Parameters[e.config.type].default_value)
+'''
 match_indent = true
-payload = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.chips) == 'number' and math.abs(G.GAME.current_round.current_hand.chips) or 1)))) end'''
 
-
-# Makes negative mult work
+# This also accounts for Paya's Terrible Addons, which does something similar.
 [[patches]]
 [patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.mult) == 'number' and G.GAME.current_round.current_hand.mult or 1)))) end'''
-position = "at"
-overwrite = true
+target = 'functions/state_events.lua'
+pattern = '''hand_chips = mod_chips(0)'''
+position = 'after'
+payload = '''pow = mod_pow(1)'''
 match_indent = true
-payload = '''if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.mult) == 'number' and math.abs(G.GAME.current_round.current_hand.mult) or 1)))) end'''
-
-
-# Replaces calculation for flame instensity with one that accounts for pow
-[[patches]]
-[patches.pattern]
-target = "functions/misc_functions.lua"
-pattern = '''if type(G.GAME.current_round.current_hand.chips) ~= 'number' or type(G.GAME.current_round.current_hand.mult) ~= 'number' then
-    G.ARGS.score_intensity.earned_score = 0
-  else
-    G.ARGS.score_intensity.earned_score = G.GAME.current_round.current_hand.chips*G.GAME.current_round.current_hand.mult
-  end'''
-position = "at"
-overwrite = true
-match_indent = true
-payload = """if type(G.GAME.current_round.current_hand.chips) ~= 'number' or type(G.GAME.current_round.current_hand.mult) ~= 'number' or type(G.GAME.current_round.current_hand.pow) ~= 'number' then
-    G.ARGS.score_intensity.earned_score = 0
-  else
-    G.ARGS.score_intensity.earned_score = POW.calc_chips(G.GAME.current_round.current_hand.chips, G.GAME.current_round.current_hand.mult, G.GAME.current_round.current_hand.pow)
-  end"""
-
-
-# Adds data for the flame on the pow box
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = '''G.ARGS.flame_handler = G.ARGS.flame_handler or {'''
-position = "after"
-match_indent = true
-payload = """
-  pow = {
-    id = 'flame_pow',
-    arg_tab = 'pow_flames',
-    colour = G.C.GREEN,
-    accent = G.C.UI_POWLICK,
-    y = 0,
-    w = 1.75,
-    h = 1.25
-  },"""
-
-
-# Allows for the width of the pow flame to be adjusted
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = '''e.config.object = Sprite(0, 0, 2.5, 2.5, G.ASSET_ATLAS["ui_1"], {x = 2, y = 0})'''
-position = "at"
-match_indent = true
-overwrite = true
-payload = """e.config.object = Sprite(0, 0, v.w and v.w or 2.5, v.h and v.h or 2.5, G.ASSET_ATLAS["ui_1"], {x = 2, y = 0})"""

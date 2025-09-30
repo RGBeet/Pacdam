@@ -23,7 +23,6 @@ return {
                 return {
                     pow = card.ability.extra.pow,
                     card = context.other_card,
-                    message = localize{"a_pow"}
                 }
             end
         end,

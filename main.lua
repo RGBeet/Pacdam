@@ -71,6 +71,7 @@ SMODS.Shader{ key = 'glowbloom',  path = 'glowbloom.fs' }
 G.C.POW         = HEX('57C185')
 G.C.FISH        = HEX("308fe3")
 G.C.TETHERED    = HEX('248571')
+G.C.UI_POW      = G.C.POW
 
 POW = Pacdam
 
@@ -98,6 +99,84 @@ function POW.get_most_played_poker_hand()
     end
     return _handname
 end]]
+
+
+Pacdam.GUI = {}
+
+function mod_pow(_pow)
+  SMODS.Scoring_Parameters.pow:modify(nil, _pow - (pow or 1))
+  return _pow
+end
+
+SMODS.Scoring_Parameters.pow = {
+    key = 'pow',
+    default_value = 1,
+    colour = G.C.UI_POW,
+    calculation_keys = {'pow', 'h_pow', 'pow_mod',},
+    calc_effect = function(self, effect, scored_card, key, amount, from_edition)
+        if (key == 'pow' or key == 'h_pow' or key == 'pow_mod') and amount then
+            if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+            self:modify(amount)
+            if not effect.remove_default_message then
+                if from_edition then
+                    card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_pow' or 'a_pow_minus', vars = {amount}}, pow_mod = amount, colour = G.C.EDITION, edition = true})
+                else
+                    if key ~= 'pow_mod' then
+                        if effect.pow_message then
+                            card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.pow_message)
+                        else
+                            card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'pow', amount, percent)
+                        end
+                    end
+                end
+            end
+            return true
+        end
+    end,
+    modify = function(self, amount, skip)
+        if not skip then pow = mod_pow(self.current + amount) end
+        self.current = (pow or 1) + (skip or 0)
+        update_hand_text({delay = 0}, {pow = self.current})
+    end
+}
+
+function SMODS.GUI.pow_operator(scale)
+    return
+    {n=G.UIT.C, config={align = "cm", id = 'hand_pow_operator_container'}, nodes={
+        {n=G.UIT.T, config={text = "^", lang = G.LANGUAGES['en-us'], scale = scale*2, colour = G.C.UI_POW, shadow = true}},
+    }}
+end
+
+function SMODS.GUI.pow_container(scale)
+    return 
+    {n=G.UIT.C, config={align = 'cm', id = 'hand_pow_container'}, nodes = {
+        SMODS.GUI.score_container({
+            type    = 'pow',
+            colour  = G.C.UI_POW,
+            text    = "?"
+        })
+    }}
+end
+
+local hand_chips_container_ref = SMODS.GUI.hand_chips_container
+function SMODS.GUI.hand_chips_container(scale)
+    local ret = hand_chips_container_ref(scale)
+    -- After the chips container, place the the ^ operator and the pow?
+    local index = nil
+    for i=1,#ret.nodes do
+        print(ret.nodes[i].config.id)
+        if ret.nodes[i] and ret.nodes[i].config.id == 'hand_chips_container' then 
+            index = i 
+            break
+        end
+    end
+    tell("UI Index is " .. tostring(index))
+    if index ~= nil then
+        table.insert(ret.nodes, index+1, SMODS.GUI.pow_container(scale))
+        table.insert(ret.nodes, index+1, SMODS.GUI.pow_operator(scale))
+    end
+    return ret
+end
 
 function Pacdam.Funcs.flip_helper(source, targets, func)
     if source then
@@ -170,6 +249,36 @@ requireFolder("misc/")
 -------------------------------------
 --------------- POW -----------------
 -------------------------------------
+---
+-- inserts the keys required to allow jokers to return pow in their calculate functions
+
+SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "pow"
+SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "pow_mod"
+SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "pow_decay"
+
+SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "xpow"
+SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "x_pow"
+SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "xpow_mod"
+SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "xpow_decay"
+
+
+
+function Pacdam.Funcs.xpow(pow,amt)
+    return 1 + ((pow - 1) * amt)
+end
+
+function Pacdam.Funcs.epow(pow,amt)
+    return pow > 1 and (1+ (((pow-1)*100)^amt)/100) or (pow ^ amt)
+end
+
+-- function to get perma_pow from playing_cards
+Card.get_pow_bonus = function (self)
+    return self.ability.perma_pow and self.ability.perma_pow or 0
+end
+
+Card.get_xpow_bonus = function (self)
+    return self.ability.perma_xpow and self.ability.perma_xpow or 0
+end
 
 -- hook for setting pow to 1 when a hand is being evaluated
 local evaluate_play_ref = G.FUNCS.evaluate_play
@@ -185,19 +294,11 @@ function update_hand_text(config, vals)
     return update_hand_text_ref(config, vals)
 end
 
-function Pacdam.Funcs.xpow(pow,amt)
-    return 1 + ((pow - 1) * amt)
-end
-
-function Pacdam.Funcs.epow(pow,amt)
-    return pow > 1 and (1+ (((pow-1)*100)^amt)/100) or (pow ^ amt)
-end
-
 -- hook for allowing jokers to return pow in their calculate functions
 local calculate_individual_effect_ref = SMODS.calculate_individual_effect
 SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, from_edition)
-
     if (key == 'pow' or key == 'h_pow' or key == 'pow_mod' or key == 'pow_decay') and amount then
+        print("POW TIME!!!")
         if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
         pow = pow + amount
         update_hand_text({delay = 0}, {chips = hand_chips, mult = mult, pow = pow})
@@ -220,12 +321,6 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
     return calculate_individual_effect_ref(effect, scored_card, key, amount, from_edition)
 end
 
--- inserts the keys required to allow jokers to return pow in their calculate functions
-table.insert(SMODS.calculation_keys, "pow")
-table.insert(SMODS.calculation_keys, "h_pow")
-table.insert(SMODS.calculation_keys, "pow_mod")
-table.insert(SMODS.calculation_keys, "pow_decay")
-
 -- custom number formatting for additional decimal places
 local pow_number_format = function(num, e_switch_point)
     if type(num) ~= 'number' then return num end
@@ -247,27 +342,6 @@ local pow_number_format = function(num, e_switch_point)
     local int_part, dec_part = formatted:match("^(%d+)%p(%d%d)$")
     if int_part then int_part = int_part:reverse():gsub("(%d%d%d)", "%1,"):gsub(",$", ""):reverse(); formatted = int_part .. "." .. dec_part end
     return sign .. formatted
-end
-
--- function for updating the pow text
-G.FUNCS.hand_pow_UI_set = function(e)
-    local new_pow_text = pow_number_format(G.GAME.current_round.current_hand.pow)
-    if new_pow_text ~= G.GAME.current_round.current_hand.pow_text then 
-        G.GAME.current_round.current_hand.pow_text = new_pow_text
-        e.config.object.scale = scale_number(G.GAME.current_round.current_hand.pow, 0.55, 1000)
-        e.config.object:update_text()
-        if not G.TAROT_INTERRUPT_PULSE then G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(type(G.GAME.current_round.current_hand.pow) == 'number' and G.GAME.current_round.current_hand.pow or 1)))) end
-    end
-end
-
--- hook for the flames on the pow box
-local flame_handler_ref = G.FUNCS.flame_handler
-G.FUNCS.flame_handler = function(e)
-  G.C.UI_POWLICK = G.C.UI_POWLICK or {1, 1, 1, 1}
-  for i=1, 3 do
-    G.C.UI_POWLICK[i] = math.min(math.max(((G.C.GREEN[i]*0.5+G.C.YELLOW[i]*0.5) + 0.1)^2, 0.1), 1)
-  end
-  return flame_handler_ref(e)
 end
 
 -- hook to fix scaling for negative numbers
@@ -298,11 +372,8 @@ generate_card_ui = function(_c, full_UI_table, specific_vars, card_type, badges,
     return ret
 end
 
--- function to get perma_pow from playing_cards
-Card.get_pow_bonus = function (self)
-    return self.ability.perma_pow and self.ability.perma_pow or 0
-end
 
+--[[
 local uibox_ref = create_UIBox_HUD
 function create_UIBox_HUD()
 	local orig = uibox_ref()
@@ -318,7 +389,7 @@ function create_UIBox_HUD()
         {n=G.UIT.C, config={align = "cm", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.CLEAR, id = 'hand_pow_empty', emboss = 0.05}},
     }})
     return orig
-end
+end]]
 
 SMODS.Sticker:take_ownership("eternal", {
     draw = function(self, card, layer)

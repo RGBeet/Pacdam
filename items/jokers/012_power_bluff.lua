@@ -20,10 +20,9 @@ return {
                 }
             end
             if context.joker_main or context.forcetrigger then
-                return {
+                return { 
                     pow     = card.ability.extra.pow,
                     mult    = -card.ability.extra.mult,
-                    card    = card
                 }
             end
         end,
