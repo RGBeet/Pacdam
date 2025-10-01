@@ -32,3 +32,12 @@ pattern = '''hand_chips = mod_chips(0)'''
 position = 'after'
 payload = '''pow = mod_pow(1)'''
 match_indent = true
+
+# This also accounts for Paya's Terrible Addons, which does something similar.
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''local delta = (type(vals[name]) == 'number' and type(G.GAME.current_round.current_hand[name]) == 'number') and (vals[name] - G.GAME.current_round.current_hand[name]) or 0'''
+position = 'at'
+payload = '''local delta = (type(vals[name]) == 'number' and type(G.GAME.current_round.current_hand[name]) == 'number') and math.abs(vals[name] - G.GAME.current_round.current_hand[name]) or 0'''
+match_indent = true

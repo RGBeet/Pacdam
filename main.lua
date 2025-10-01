@@ -139,23 +139,43 @@ SMODS.Scoring_Parameters.pow = {
         update_hand_text({delay = 0}, {pow = self.current})
     end
 }
+local scale_down = 0.8
 
 function SMODS.GUI.pow_operator(scale)
-    return
-    {n=G.UIT.C, config={align = "cm", id = 'hand_pow_operator_container'}, nodes={
-        {n=G.UIT.T, config={text = "^", lang = G.LANGUAGES['en-us'], scale = scale*2, colour = G.C.UI_POW, shadow = true}},
+    return {n=G.UIT.C, config={align = "cm", id = 'hand_pow_operator_container'}, nodes={
+        {n=G.UIT.T, config={text = "^", lang = G.LANGUAGES['en-us'], scale = scale * scale_down, colour = G.C.UI_POW, shadow = true}},
     }}
 end
 
 function SMODS.GUI.pow_container(scale)
-    return 
-    {n=G.UIT.C, config={align = 'cm', id = 'hand_pow_container'}, nodes = {
+    return {n =G.UIT.C, config={align = 'cm', id = 'hand_pow_container'}, nodes = {
         SMODS.GUI.score_container({
             type    = 'pow',
             colour  = G.C.UI_POW,
-            text    = "?"
+            align   = 'cm',
+            scale = scale * scale_down / 2,
+            h = 0.5,
+            w = 1,
         })
     }}
+end
+
+local score_container_ref = SMODS.GUI.score_container
+function SMODS.GUI.score_container(args)
+    args.scale  = (args.scale or 0.4) * scale_down
+    args.w      = (args.w or 2) * scale_down
+    args.h      = (args.h or 1) * scale_down
+    return score_container_ref(args)
+end
+
+local operator_ref = SMODS.GUI.operator
+function SMODS.GUI.operator(scale)
+    return operator_ref(scale * scale_down)
+end
+
+local mult_container_ref = SMODS.GUI.mult_container
+function SMODS.GUI.mult_container(scale)
+    return mult_container_ref(scale * scale_down)
 end
 
 local hand_chips_container_ref = SMODS.GUI.hand_chips_container
@@ -298,11 +318,9 @@ end
 local calculate_individual_effect_ref = SMODS.calculate_individual_effect
 SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, from_edition)
     if (key == 'pow' or key == 'h_pow' or key == 'pow_mod' or key == 'pow_decay') and amount then
-        print("POW TIME!!!")
         if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
         pow = pow + amount
         update_hand_text({delay = 0}, {chips = hand_chips, mult = mult, pow = pow})
-
         if not effect.remove_default_message then
             if from_edition then
                 card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_pow' or 'a_pow_minus', vars = {amount}}, chip_mod = amount, colour = G.C.EDITION, edition = true})
@@ -371,25 +389,6 @@ generate_card_ui = function(_c, full_UI_table, specific_vars, card_type, badges,
     end
     return ret
 end
-
-
---[[
-local uibox_ref = create_UIBox_HUD
-function create_UIBox_HUD()
-	local orig = uibox_ref()
-
-    local hands_ui = orig.nodes[1].nodes[1].nodes[4]
-
-    table.insert(hands_ui.nodes[1].nodes, 2, {n=G.UIT.R, config={align = "cm", minh = 0.5, draw_layer = 1}, nodes={
-        {n=G.UIT.C, config={align = "cr", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.UI_POW, id = 'hand_pow_area', emboss = 0.05, padding = 0.03}, nodes={
-            {n=G.UIT.O, config={func = 'flame_handler',no_role = true, id = 'flame_pow', object = Moveable(0,0,0,0), w = 0, h = 0}},
-            {n=G.UIT.O, config={id = 'hand_pow', func = 'hand_pow_UI_set',object = DynaText({string = {{ref_table = G.GAME.current_round.current_hand, ref_value = "pow_text"}}, colours = {G.C.UI.TEXT_LIGHT}, font = G.LANGUAGES['en-us'].font, shadow = true, float = true, scale = 0.5, r = 0.4*1.4})}},
-            {n=G.UIT.B, config={w=0.1,h=0.1}},
-        }},
-        {n=G.UIT.C, config={align = "cm", minw = 1.5, minh = 0.5, r = 0.1, colour = G.C.CLEAR, id = 'hand_pow_empty', emboss = 0.05}},
-    }})
-    return orig
-end]]
 
 SMODS.Sticker:take_ownership("eternal", {
     draw = function(self, card, layer)

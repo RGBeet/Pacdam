@@ -101,4 +101,3 @@ G.E_MANAGER:add_event(Event({
 	end)
 }))'''
 match_indent = true
-
