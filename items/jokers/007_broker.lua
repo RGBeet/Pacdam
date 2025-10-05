@@ -16,7 +16,7 @@ return {
         end,
         calculate = function(self, card, context)
             if context.joker_main or context.forcetrigger then
-                return { pow = card.ability.extra.pow }
+                return { pow = Pacdam.Funcs.calculate_broker_rate(card.ability.extra.pow_mod, card.ability.extra.money) }
             end
         end,
         demicoloncompat = true,

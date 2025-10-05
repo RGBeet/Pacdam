@@ -4,13 +4,11 @@ return {
 			b_rgpd_powerful = {
 				name = "Powerful Deck",
 				text = {
-                    "All hands gain",
                     "{C:pow}+#1#{} Pow",
-                    "and {X:mult, C:white}X#2#{} Mult",
-                    "at end of scoring",
-                    "{X:orange,C:white}#3#{} blind size",
+                    "{X:mult,C:white}X#2#{} Mult",
+                    "{X:attention,C:white}X#3#{} blind size",
                     "{C:pow}Pacdam{} cards are",
-                    "{C:attention}X#4#{} more likely to appear"
+                    "{C:attention}2X{} more likely to appear"
 				},
 			},
         },
@@ -41,6 +39,22 @@ return {
                     "{C:pow}+#1#{} Pow"
                 }
             }
+        },
+        Tag = {
+            tag_rgpd_pow = {
+                name = "POW! Tag",
+                text = {
+                    "{C:pow}+#1#{} Pow",
+                    "for the round"
+                }
+            },
+            tag_rgpd_phish = {
+                name = "Phish Tag",
+                text = {
+                    "Gain between",
+                    "1-3 {C:fish}Fish{}",
+                }
+            },
         },
         Fish = {
             c_rgpd_fish = {

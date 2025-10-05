@@ -58,36 +58,7 @@ return {
         end,
         calculate = function(self, card, context)
             if context.pre_discard then
-                local fish
-                MadLib.loop_func(G.consumeables.cards, function(v)
-                    if v.config.center.key == "c_rgpd_fish" and f.ability.extra.num_fish < 5 then fish = v end
-                end)
-                if fish then
-                    local num_fish = fish.ability.extra.num_fish
-                    num_fish = num_fish + 1
-                    fish.ability.extra.num_fish = num_fish
-                    fish.sell_cost = num_fish - 1
-                    fish.children.center:set_sprite_pos({ x = num_fish - 1, y = 0 })
-                    fish:juice_up()
-                    card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Caught one!", colour = G.C.FILTER })
-                elseif #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-                    G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-                    fish = SMODS.add_card({area = G.consumeables, key = "c_rgpd_fish"})
-                    fish.ability.extra.num_fish = 1
-                    fish.sell_cost = 0
-                    MadLib.event({
-                        trigger = "before",
-                        delay = 0.0,
-                        func = (function()
-                            -- fish = SMODS.add_card({area = G.consumeables, key = "c_pow_Fish"})
-                            G.GAME.consumeable_buffer = 0
-                            -- fish.ability.extra.num_fish = 1
-                            -- fish.sell_cost = 0
-                            return true
-                        end)
-                    })
-                    card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Caught one!", colour = G.C.FILTER })
-                end
+                Pacdam.do_fish()
             end
         end,
         demicoloncompat = true,
