@@ -119,6 +119,7 @@ SMODS.Scoring_Parameters.pow = {
     key = 'pow',
     default_value = 1,
     colour = G.C.UI_POW,
+	lick = {1, 1, 1, 1},
     calculation_keys = {'pow', 'h_pow', 'pow_mod',},
     calc_effect = function(self, effect, scored_card, key, amount, from_edition)
         if (key == 'pow' or key == 'h_pow' or key == 'pow_mod') and amount then
@@ -140,6 +141,14 @@ SMODS.Scoring_Parameters.pow = {
             return true
         end
     end,
+	flame_handler = function(self)
+		return {
+			id = 'flame_'..self.key, 
+			arg_tab = self.key..'_flames',
+			colour = self.colour,
+			accent = self.lick
+		}
+	end,
     modify = function(self, amount, skip)
         if not skip then pow = mod_pow(self.current + amount) end
         self.current = (pow or 1) + (skip or 0)
