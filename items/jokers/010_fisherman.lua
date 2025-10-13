@@ -58,7 +58,7 @@ return {
         end,
         calculate = function(self, card, context)
             if context.pre_discard then
-                Pacdam.do_fish()
+                Pacdam.do_fish(card)
             end
         end,
         demicoloncompat = true,

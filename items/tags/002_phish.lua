@@ -21,7 +21,7 @@ return {
                     return true
                 end)
                 for i = 1, math.random(1,3) do
-                    Pacdam.do_fish()
+                    Pacdam.do_fish(nil)
                 end
                 tag.triggered = true
             return true

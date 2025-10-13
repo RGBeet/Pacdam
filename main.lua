@@ -216,7 +216,7 @@ end
 
 
 
-function Pacdam.do_fish()
+function Pacdam.do_fish(card)
     local fish
 
     MadLib.loop_func(G.consumeables.cards, function(v)
@@ -231,7 +231,6 @@ function Pacdam.do_fish()
         fish.sell_cost = num_fish - 1
         fish.children.center:set_sprite_pos({ x = num_fish - 1, y = 0 })
         fish:juice_up()
-        card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Caught one!", colour = G.C.FILTER })
     elseif #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
         G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
         fish = SMODS.add_card({area = G.consumeables, key = "c_rgpd_fish"})
@@ -248,6 +247,8 @@ function Pacdam.do_fish()
                 return true
             end)
         })
+    end
+    if card then
         card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Caught one!", colour = G.C.FILTER })
     end
 end
