@@ -16,6 +16,7 @@ return {
         end,
         apply = function(self, tag, context)
             if context.type == 'immediate' then
+                local lock = tag.ID
                 tag:yep("X", G.C.POW, function()
                     G.CONTROLLER.locks[lock] = nil
                     return true
