@@ -63,6 +63,13 @@ SMODS.Atlas{
     py = 95
 }
 
+SMODS.Atlas{
+    key = "placeholder",
+    path = "placeholder.png",
+    px = 71,
+    py = 95
+}
+
 SMODS.Sound{
     key = "pow_hit",
     path = "pow_hit.ogg"

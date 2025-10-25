@@ -287,10 +287,18 @@ return {
                 name = "Odd One Out",
                 text = {
                     "{C:attention}Before{} scoring,",
-                    "{C:attention}debuffs{} leftmost Joker",
-                    "and give {C:pow}+#1#{} Pow",
-                    "{C:pow}-#1#{} Pow if this Joker",
-                    "is the {C:attention}leftmost{} Joker",
+                    "{C:red}debuffs{} leftmost Joker",
+                    "{C:pow}+#1#{} Pow if this is",
+                    "{C:red}not{} leftmost Joker"
+                },
+            },
+            j_rgpd_odd_one_out_multi = {
+                name = "Odd One Out",
+                text = {
+                    "{C:attention}Before{} scoring,",
+                    "{C:red}debuffs{} leftmost {C:attention}#2#{} Jokers",
+                    "{C:pow}+#1#{} Pow per triggered debuff",
+                    "if this is {C:red}not{} leftmost Joker"
                 },
             },
         },

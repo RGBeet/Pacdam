@@ -1,11 +1,11 @@
 return {
     data = {
         object_type = "Joker",
-        key     = 'odd_one_out',
-        atlas   = 'jokers',
-        pos     = MLIB.coords(2,5),
+        key     = 'vanta_black',
+        atlas   = 'placeholder',
+        pos     = MLIB.coords(0,0),
         rarity  = 1,
-        cost    = 6,
+        cost    = 5,
         config =  {
             extra = {
                 cards_to_debuff = 1,
@@ -14,11 +14,6 @@ return {
             },
         },
         loc_vars = function(self, info_queue, card)
-            if (card.ability.extra.cards_to_debuff or 1) > 1 then
-                return { vars = { card.ability.extra.cards_to_debuff, card.ability.extra.pow } }
-            else
-                return { vars = { card.ability.extra.pow } }
-            end
         end,
         calculate = function(self, card, context)
 
