@@ -16,6 +16,11 @@ Pacdam.enabled = copy_table(PacdamConfig)      		-- what is enabled?
 --------- ATLASES & SOUNDS ----------
 -------------------------------------
 
+function Pacdam.powerful_desc()
+    return "{s:0.6,C:inactive}(Originally from {s:0.6,C:pow}Powerful{s:0.6,C:inactive}",
+    "{s:0.6,C:inactive}by {E:1,C:green,s:0.6}chaseoqueso{s:0.6,C:inactive})"
+end
+
 SMODS.Atlas{
     key = "jokers",
     path = "jokers.png",

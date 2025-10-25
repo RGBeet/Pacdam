@@ -1,26 +1,26 @@
 return {
     descriptions = {
         Back = {
-			b_rgpd_powerful = {
-				name = "Powerful Deck",
-				text = {
+            b_rgpd_powerful = {
+                name = "Powerful Deck",
+                text = {
                     "{C:pow}+#1#{} Pow",
                     "{X:mult,C:white}X#2#{} Mult",
                     "{X:attention,C:white}X#3#{} blind size",
                     "{C:pow}Pacdam{} cards are",
                     "{C:attention}2X{} more likely to appear"
-				},
-			},
+                },
+            },
         },
         Enhanced = {
-			m_rgpd_vis = {
+            m_rgpd_vis = {
                 name = "Vis Card",
                 text = {
                     "{C:pow}+#1#{} Pow",
                     "{C:mult}-#2#{} Mult"
                 }
             },
-			m_rgpd_flux = {
+            m_rgpd_flux = {
                 name = "Flux Card",
                 text = {
                     "{C:pow}+#1#{} Pow",
@@ -36,7 +36,8 @@ return {
             e_rgpd_glow = {
                 name = "Luminous",
                 text = {
-                    "{C:pow}+#1#{} Pow"
+                    "{C:pow}+#1#{} Pow",
+                    Pacdam.powerful_desc()
                 }
             }
         },
@@ -60,8 +61,9 @@ return {
             c_rgpd_fish = {
                 name = "Fish",
                 text = {
-                    "Draw a card",
-                    "{C:inactive}(Currently #1#/#2# Fish){}"
+                    "Go Fish! {C:inactive}(Draw a card)",
+                    "{C:inactive,s:0.8}(Currently {C:fish,s:0.8}#1# / #2#{C:inactive,s:0.8} Fish)",
+                    Pacdam.powerful_desc()
                 },
             }
         },
@@ -71,7 +73,8 @@ return {
                 text = {
                     "{C:pow}+#1#{} Pow if played",
                     "hand contains",
-                    "a {C:attention}Pair{}"
+                    "a {C:attention}Pair{}",
+                    Pacdam.powerful_desc()
                 }
             },
             j_rgpd_power_of_three = {
@@ -79,7 +82,8 @@ return {
                 text = {
                     "{C:pow}+#1#{} Pow if played",
                     "hand contains",
-                    "a {C:attention}Three of a Kind{}"
+                    "a {C:attention}Three of a Kind",
+                    Pacdam.powerful_desc()
                 }
             },
             j_rgpd_power_of_four = {
@@ -87,7 +91,8 @@ return {
                 text = {
                     "{C:pow}+#1#{} Pow if played",
                     "hand contains",
-                    "a {C:attention}Four of a Kind{}"
+                    "a {C:attention}Four of a Kind",
+                    Pacdam.powerful_desc()
                 }
             },
             j_rgpd_power_series = {
@@ -95,7 +100,8 @@ return {
                 text = {
                     "{C:pow}+#1#{} Pow if played",
                     "hand contains",
-                    "a {C:attention}Straight{}"
+                    "a {C:attention}Straight",
+                    Pacdam.powerful_desc()
                 }
             },
             j_rgpd_power_set = {
@@ -103,23 +109,25 @@ return {
                 text = {
                     "{C:pow}+#1#{} Pow if played",
                     "hand contains",
-                    "a {C:attention}Flush{}"
+                    "a {C:attention}Flush",
+                    Pacdam.powerful_desc()
                 }
             },
             j_rgpd_power_play = {
                 name = "Power Play",
                 text = {
-                    "{C:pow}+#1#{} Pow if ranks",
-                    "of played cards",
-                    "sum to {C:attention}21{}"
+                    "{C:pow}+#1#{} Pow if card",
+                    "contains equals {C:attention}Blackjack",
+                    Pacdam.powerful_desc()
                 }
             },
             j_rgpd_fisherman = {
                 name = "Fisherman",
                 text = {
-                    "After Discard,",
-                    "gain a {C:fish}Fish{}",
-                    "{C:inactive}(Must have room){}"
+                    "After discarding,",
+                    "gain a {C:fish}Fish",
+                    "{C:inactive}(Must have room)",
+                    Pacdam.powerful_desc()
                 },
             },
             j_rgpd_lich = {
@@ -128,25 +136,29 @@ return {
                     "Adds a random",
                     "{C:dark_edition}Negative{} {V:1}Tethered{}",
                     "joker when Boss",
-                    "Blind is defeated"
-                }
+                    "Blind is defeated",
+                    Pacdam.powerful_desc()
+                },
             },
             j_rgpd_frog = {
                 name = "Frog",
                 text = {
                     "#1#",
-                    "{C:inactive}(when hand is played,",
-                    "{C:pow}#2# in #3#{} {C:inactive}chance to eat",
-                    "{C:inactive}a non-scoring card.", 
-                    "{C:inactive}Scores all eaten cards)"
+                    "When hand is played,",
+                    "{C:pow}#1# in #3#{} chance to eat",
+                    "a non-scoring card",
+                    "Eaten cards {C:attention}always score",
+                    Pacdam.powerful_desc()
                 }
             },
             j_rgpd_broker = {
                 name = "Broker",
                 text = {
+                    "Stonks.",
                     "{C:pow}+#1#{} Pow for every",
-                    "{C:money}$#2#{} you have", 
-                    "{C:inactive}(Currently {C:pow}+#3#{C:inactive} Pow)"
+                    "{C:money}$#2#{} you have",
+                    "{C:inactive}(Currently {C:pow}+#3#{C:inactive} Pow)",
+                    Pacdam.powerful_desc()
                 }
             },
             j_rgpd_uranium_glass = {
@@ -154,13 +166,15 @@ return {
                 text = {
                     "Played {C:attention}Stone Cards{}",
                     "give {C:pow}+#1#{} Pow",
-                    "when scored"
+                    "when scored",
+                    Pacdam.powerful_desc()
                 }
             },
             j_rgpd_reverse_card = {
                 name = "Reverse Card",
                 text = {
-                    "Swaps {C:chips}Chips{} and {C:mult}Mult{}"
+                    "Swaps {C:chips}Chips{} and {C:mult}Mult{}",
+                    Pacdam.powerful_desc()
                 },
             },
             j_rgpd_joku = {
@@ -171,14 +185,16 @@ return {
                     "exceeds required chips",
                     "{C:inactive}(Currently {C:pow}+#2#{} {C:inactive}Pow)",
                     "{C:inactive}What does the scouter say",
-                    "{C:inactive}about his {C:attention, E:1}power level?!"
+                    "{C:inactive}about his {C:attention, E:1}power level?!",
+                    Pacdam.powerful_desc()
                 },
             },
             j_rgpd_power_bluff = {
                 name = "Power Bluff",
                 text = {
                     "{C:pow}+#1#{} Pow, {C:red}#2#{} Mult",
-                    "Start with {C:attention}1{} hand"
+                    "Start with {C:attention}1{} hand",
+                    Pacdam.powerful_desc()
                 },
             },
             j_rgpd_biker = {
@@ -188,15 +204,17 @@ return {
                     "permanently gains",
                     "{C:pow}+#1#{} Pow",
                     "{C:red}#2#{} Mult",
-                    "when scored"
+                    "when scored",
+                    Pacdam.powerful_desc()
                 },
             },
             j_rgpd_chameleon_ball = {
-                name = "Chameleon Ball",
+                name = "Wild Chameleon",
                 text = {
                     "Each {C:attention}Wild Card",
                     "held in hand",
                     "gives {C:pow}+#1#{} Pow",
+                    Pacdam.powerful_desc()
                 },
             },
             j_rgpd_superhero = {
@@ -204,14 +222,17 @@ return {
                 text = {
                     "{C:pow}+#1#{} Pow",
                     "{C:attention}Flips{} when most played",
-                    "{C:attention}poker hand{} is played"
+                    "{C:attention}poker hand{} is played",
+                    Pacdam.powerful_desc()
                 },
             },
             j_rgpd_alter_ego = {
                 name = "Alter Ego",
                 text = {
-                    "{C:attention}Flips{} when {C:attention}Boss Blind{}",
-                    "is selected"
+                    "Becomes {C:attention}Superhero",
+                    "when {C:attention}Boss Blind",
+                    "is selected",
+                    Pacdam.powerful_desc()
                 },
             },
             j_rgpd_joker_cubed = {
@@ -221,7 +242,7 @@ return {
                     "give {C:pow}+#1#{} Pow",
                 },
             },
-            j_rgpd_pow_block= {
+            j_rgpd_pow_block = {
                 name = "POW! Block",
                 text = {
                     "If {C:attention}final{} hand",
@@ -240,52 +261,85 @@ return {
                     "{C:inactive}(#3#/#4# hands played)",
                 },
             },
+            j_rgpd_brand_name_joker = {
+                name = "Brand Name Joker",
+                text = {
+                    "{C:green}#1# in #2#{} chance to",
+                    "retrigger a {C:attention}random{}",
+                    "owned Joker",
+                    "{C:pow}-#3#{} Pow"
+                },
+            },
+            j_rgpd_kujenga = {
+                name = "Kujenga",
+                text = {
+                    "{C:green}#1# in #2# chance",
+                    "this Joker gains {C:mult}+#3#{} Mult",
+                    "upon {C:red}discard{}",
+                    "Otherwise, this Joker",
+                    "loses {C:red}-#4#{} Mult",
+                    "{C:inactive}(Currently {C:chips}+#4#{C:inactive} Chips)",
+                    "Reduce numerator by {C:attention}-#5#{}",
+                    "per used {C:red}discard{}"
+                },
+            },
+            j_rgpd_odd_one_out = {
+                name = "Odd One Out",
+                text = {
+                    "{C:attention}Before{} scoring,",
+                    "{C:attention}debuffs{} leftmost Joker",
+                    "and give {C:pow}+#1#{} Pow",
+                    "{C:pow}-#1#{} Pow if this Joker",
+                    "is the {C:attention}leftmost{} Joker",
+                },
+            },
         },
         Tarot = {
-			c_rgpd_growth = {
-				name = "Growth",
+            c_rgpd_growth = {
+                name = "Growth",
                 text = {
-                    'Enhances up to {C:attention}#1#{}',
-                    'selected cards to',
-                    '{C:attention}#2#s',
+                    "Enhances up to {C:attention}#1#{}",
+                    "selected cards to",
+                    "{C:attention}#2#s",
                 }
-			},
-			c_rgpd_deluge = {
-				name = "Deluge",
+            },
+            c_rgpd_deluge = {
+                name = "Deluge",
                 text = {
-                    'Enhances up to {C:attention}#1#{}',
-                    'selected cards to',
-                    '{C:attention}#2#s',
+                    "Enhances up to {C:attention}#1#{}",
+                    "selected cards to",
+                    "{C:attention}#2#s",
                 }
-			},
+            },
         },
         Spectral = {
             c_rgpd_geist = {
                 name = "Geist",
                 text = {
-                    "Apply {C:dark_edition}#1#{}",
+                    "Apply {C:dark_edition}#1#",
                     "effect to {C:attention}#2#{} selected",
-                    "card(s) in hand"
+                    "card(s) in hand",
+                    Pacdam.powerful_desc()
                 }
             }
         },
         Rotarot = {
-			c_rgpd_rot_vis = {
-				name = "Growth!",
+            c_rgpd_rot_vis = {
+                name = "Growth!",
                 text = {
-                    'Enhances up to {C:attention}#1#{}',
-                    'selected cards to',
-                    '{C:attention}#2#s'
+                    "Enhances up to {C:attention}#1#{}",
+                    "selected cards to",
+                    "{C:attention}#2#s"
                 }
-			},
-			c_rgpd_rot_deluge = {
-				name = "Deluge!",
+            },
+            c_rgpd_rot_deluge = {
+                name = "Deluge!",
                 text = {
-                    'Enhances up to {C:attention}#1#{}',
-                    'selected cards to',
-                    '{C:attention}#2#s'
+                    "Enhances up to {C:attention}#1#{}",
+                    "selected cards to",
+                    "{C:attention}#2#s"
                 }
-			},
+            },
         },
         Other = {
             card_pow = {
@@ -309,19 +363,19 @@ return {
     },
     misc = {
         dictionary = {
-            k_fish          = "Fish",
-            b_fish_cards    = "Fish Cards",
+            k_fish = "Fish",
+            b_fish_cards = "Fish Cards",
         },
         labels = {
-            rgpd_tethered   = "Tethered",
-            rgpd_glow       = "Luminous"
+            rgpd_tethered = "Tethered",
+            rgpd_glow = "Luminous"
         },
-        v_dictionary={
-            a_pow           = "+#1# Pow",
-            a_pow_minus     = "-#1# Pow",
-            a_xpow          = "X#1# Pow",
-            a_xpow_minus    = "-X#1# Pow",
-            a_decay         = "Decay",
+        v_dictionary = {
+            a_pow = "+#1# Pow",
+            a_pow_minus = "-#1# Pow",
+            a_xpow = "X#1# Pow",
+            a_xpow_minus = "-X#1# Pow",
+            a_decay = "Decay",
         }
     }
 }
