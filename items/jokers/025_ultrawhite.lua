@@ -1,19 +1,19 @@
-function Pacdam.Funcs.hand_is_dark(cards)
+function Pacdam.Funcs.hand_is_light(cards)
     return not MadLib.list_matches_one(cards, function(v)
-        return v:has_dark_suit()
+        return v:has_light_suit()
     end)
 end
 
 return {
     data = {
         object_type = "Joker",
-        key     = 'vanta_black',
+        key     = 'ultrawhite',
         atlas   = 'placeholder',
         pos     = MLIB.coords(0,0),
         rarity  = 2,
-        cost    = 5,
+        cost    = 6,
         config =  {
-            extra = { pow = 0.04 },
+            extra = { pow = 0.06 },
         },
         loc_vars = function(self, info_queue, card)
             return MadLib.collect_vars(card.ability.extra.pow)
@@ -21,8 +21,7 @@ return {
         calculate = function(self, card, context)
             if 
                 (context.joker_main 
-                and context.full_hand
-                and Pacdam.Funcs.hand_is_dark(context.full_hand))
+                and Pacdam.Funcs.hand_is_light(G.hand.cards))
                 or context.forcetrigger
             then
                 return { pow = card.ability.extra.pow }

@@ -76,6 +76,11 @@ SMODS.Sound{
 }
 
 SMODS.Sound{
+    key = "xpow_hit",
+    path = "xpow_hit.ogg"
+}
+
+SMODS.Sound{
     key = "e_glow",
     path = "e_glow.ogg"
 }
@@ -403,6 +408,25 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
         end
         return true
     end
+    if (key == 'xpow' or key == 'h_xpow' or key == 'xpow_mod' or key == 'xpow_decay') and amount then
+        if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+        pow = 1 + (pow - 1) * amount
+        update_hand_text({delay = 0}, {chips = hand_chips, mult = mult, pow = pow})
+        if not effect.remove_default_message then
+            if from_edition then
+                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_xpow' or 'a_xpow_minus', vars = {amount}}, chip_mod = amount, colour = G.C.EDITION, edition = true})
+            else
+                if key ~= 'pow_mod' then
+                    if effect.pow_message then
+                        card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.pow_message)
+                    else
+                        card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'x_pow', amount, percent)
+                    end
+                end
+            end
+        end
+        return true
+    end
     return calculate_individual_effect_ref(effect, scored_card, key, amount, from_edition)
 end
 
@@ -445,6 +469,52 @@ function Card:calculate_joker(context)
         effect.pow_decay = -math.abs(self.ability.pow_decay)
     end
     return effect
+end
+
+local rcc = reset_castle_card
+function reset_castle_card()
+	rcc()
+
+	G.GAME.current_round.rgpd_wanted_poster     = { rank = "8", suit = "Spades" }
+	G.GAME.current_round.rgpd_number_cruncher   = { rank = nil, order = {} }
+
+	local valid_castle_cards = MadLib.get_list_matches(G.playing_cards, function(v)
+        return not SMODS.has_no_rank(v) and not SMODS.has_no_suit(v)
+    end) or {}
+
+    local castle_card = nil
+	if valid_castle_cards[1] then -- there are cards with ranks and suits
+		-- Neighborhood Watch (Edwin)
+		castle_card = pseudorandom_element(valid_castle_cards, pseudoseed("rgpd_wanted_poster" .. G.GAME.round_resets.ante))
+		G.GAME.current_round.rgpd_wanted_poster = G.GAME.current_round.rgpd_wanted_poster or {}
+		G.GAME.current_round.rgpd_wanted_poster.suit  = castle_card.base.suit
+		G.GAME.current_round.rgpd_wanted_poster.rank  = castle_card.base.value
+		G.GAME.current_round.rgpd_wanted_poster.id    = castle_card.base.id
+	end
+
+	-- This is for the Barbershop Joker
+	G.GAME.current_round.rgpd_number_cruncher.changed   = false
+    G.GAME.current_round.rgpd_number_cruncher.index     = G.GAME.current_round.rgpd_number_cruncher.index or 1
+
+    local rank_set = {}
+    MadLib.loop_func(G.playing_cards, function(v)
+        if SMODS.has_no_rank(v) then return end
+            rank_set[v.base.value] = true
+    end)
+
+    local ranks = {}
+    for rank, _ in pairs(rank_set) do table.insert(ranks, rank) end
+
+    --table.sort(ranks)
+    local seed = pseudoseed('rgpd_number_cruncher'..tostring(G.GAME.round_resets.ante)..tostring(G.GAME.round_resets.ante))
+    pseudoshuffle(ranks,seed)
+    G.GAME.current_round.rgpd_number_cruncher.order = ranks
+
+    -- Ensure rgmc_barbershop.index is valid before accessing suits
+    local index = G.GAME.current_round.rgpd_number_cruncher.index or 1
+    if index < 1 or index > #ranks then index = 1 end  -- Default to 1 if out of bounds
+
+    G.GAME.current_round.rgpd_number_cruncher.rank = G.GAME.current_round.rgpd_number_cruncher.order[index]
 end
 
 -- hook for decay to show up on joker ui

@@ -1,7 +1,3 @@
-function Pacdam.Funcs.calculate_broker_rate(pow_rate, dollar_rate)
-    return math.floor(G.GAME.dollars / dollar_rate) * pow_rate
-end
-
 return {
     data = {
         object_type = "Joker",

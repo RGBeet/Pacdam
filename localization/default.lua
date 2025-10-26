@@ -301,6 +301,118 @@ return {
                     "if this is {C:red}not{} leftmost Joker"
                 },
             },
+            j_rgpd_vanta_black = {
+                name = "Vanta Black",
+                text = {
+                    "{C:pow}+#1#{} Pow",
+                    "if all {C:attention}played{} cards",
+                    "have {C:attention}Dark{} suits"
+                },
+            },
+            j_rgpd_ultrawhite = {
+                name = "Ultrawhite",
+                text = {
+                    "{C:pow}+#1#{} Pow",
+                    "if all {C:attention}held{} cards",
+                    "have {C:attention}Light{} suits"
+                },
+            },
+            j_rgpd_hourglass = {
+                name = "Hourglass",
+                text = {
+                    "{C:red}+#1#{} discard limit",
+                    "{C:blue}#2#{} play limit"
+                },
+            },
+            j_rgpd_number_cruncher = {
+                name = "Number Cruncher",
+                text = {
+                    "Played {C:attention}#1#s{} give",
+                    '{C:mult}+#2#{} Mult when scored',
+                    "{C:inactive,s:0.8}Rank changes after each trigger"
+                },
+            },
+            j_rgpd_wanted_poster = {
+                name = "Wanted Poster",
+                text = {
+                    "If a {C:attention}#1{} of {V:1}#2#",
+                    "is scored, {C:red}destroy{} it",
+                    "and earn {C:money}$#3#",
+                    "{C:inactive,s:0.8}Rank and suit change each round"
+                },
+            },
+            j_rgpd_madcap = {
+                name = "Madcap",
+                text = {
+                    "{C:pow}+#1#{} Pow",
+                    "{C:attention}-#2#{} hand size"
+                },
+            },
+            j_rgpd_gokusen = {
+                name = "Gokusen",
+                text = {
+                    "{C:pow}+#1#{} Pow",
+                    "{C:money}-$#2# at end of {C:money}Blind",
+                },
+            },
+            j_rgpd_lazy_dog = {
+                name = "Lazy Dog",
+                text = {
+                    "Gains {C:pow}+#1#{} Pow",
+                    "for every {C:attention}unique rank",
+                    "played this Ante",
+                    "{C:inactive}(Currently {C:pow}+#2#{C:inactive} Pow)"
+                },
+            },
+            j_rgpd_erythrite = {
+                name = "Erythrite",
+                text = {
+                    "Held {V:1}#1#{} have a ",
+                    "{C:green}#6# in #7#{} chance",
+                    "to give {C:mult}+#4#{} Mult/{C:chips}+#5#{} Chips",
+                    "per held {V:2}#2#{}/{V:3}#3#{}"
+                },
+            },
+            j_rgpd_thurrito = {
+                name = "Thurrito",
+                text = {
+                    { "{X:chips,C:white}X#1#{} Mult",
+                    "{X:mult,C:white}X#2#{} Chips",
+                    "{C:pow}+#1#{} Pow",
+                    "{s:0.8,C:inactive}({V:1,s:0.8}#3#{C:inactive,s:0.8} bites left)" },
+                    { "{s:0.8,C:inactive}A burrito within a burrito",
+                    "{s:0.8,C:inactive}within the heart of",
+                    "{s:0.8,C:inactive}the same burrito" }
+                },
+            },
+            j_rgpd_green_eggs_and_spam = {
+                name = "Green Eggs and SPAM!",
+                text = {
+                    "{X:pow,C:white} X#1# {} Pow",
+                    "At end of {C:attention}Blind{},",
+                    "{C:green}#2# in #3#{} chance to",
+                    "{C:red}asplode{} and give",
+                    "{X:money,C:white} X#4# {} Money",
+                    "{C:inactive,s:0.8}(Up to {C:money,s:0.8}$#5#{C:inactive,s:0.8})"
+                },
+            },
+            j_rgpd_bishop_twin = {
+                name = "Bishop Twin",
+                text = {
+                    "{C:pow}+#1#{} Pow per",
+                    "played {C:attention}#1#{}",
+                    "within the {C:attention}last three{} Blinds",
+                    "{C:inactive}(Currently {C:pow}+#2# {C:inactive}Pow)"
+                },
+            },
+            j_rgpd_ichi = {
+                name = "Ichi",
+                text = {
+                    "Played {C:attention}#1#{} and",
+                    "{C:attention}#2#{} each give",
+                    "{X:pow,C:white} X#3# {} Pow when scored"
+                },
+            },
         },
         Tarot = {
             c_rgpd_growth = {
