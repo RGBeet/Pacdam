@@ -1,6 +1,6 @@
 function Pacdam.Funcs.hand_is_light(cards)
     return not MadLib.list_matches_one(cards, function(v)
-        return v:has_light_suit()
+        return v:has_dark_suit()
     end)
 end
 
@@ -13,7 +13,7 @@ return {
         rarity  = 2,
         cost    = 6,
         config =  {
-            extra = { pow = 0.06 },
+            extra = { pow = 0.1 },
         },
         loc_vars = function(self, info_queue, card)
             return MadLib.collect_vars(card.ability.extra.pow)
