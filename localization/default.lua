@@ -278,7 +278,7 @@ return {
                     "upon {C:red}discard{}",
                     "Otherwise, this Joker",
                     "loses {C:red}-#4#{} Mult",
-                    "{C:inactive}(Currently {C:chips}+#4#{C:inactive} Chips)",
+                    "{C:inactive}(Currently {C:mult}+#4#{C:inactive} Mult)",
                     "Reduce numerator by {C:attention}-#5#{}",
                     "per used {C:red}discard{}"
                 },
