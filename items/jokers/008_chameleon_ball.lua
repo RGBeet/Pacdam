@@ -1,7 +1,7 @@
 return {
     data = {
         object_type = "Joker",
-        key     = 'broker',
+        key     = 'chameleon_ball',
         atlas   = 'jokers',
         pos     = MLIB.coords(1,7),
         rarity  = 3,

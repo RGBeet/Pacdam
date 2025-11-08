@@ -548,9 +548,9 @@ end
 Pacdam.object_buffer['Jokers'] = Pacdam.object_buffer['Jokers'] or {}
 local function load_items(path,func)
 	local files = NFS.getDirectoryItems(mod_path..path)
-	tell('File path is '.. path)
+	--tell('File path is '.. path)
 	MadLib.loop_func(files, function(file)
-		tell('File is '..file)
+		--tell('File is '..file)
 		local f, err = SMODS.load_file(path..file)
 		if err then
 			tell_error(err)
@@ -577,7 +577,7 @@ local function load_items(path,func)
 		local data = item.data
 		if data.object_type then
 			if func then func(item.data) end
-			tell('Attempting to load item '..(item.data and item.data.key or 'UNKNOWN')..'.')
+			--tell('Attempting to load item '..(item.data and item.data.key or 'UNKNOWN')..'.')
 			SMODS[data.object_type](data)
 		end
 	end)
