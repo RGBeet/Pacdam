@@ -14,9 +14,7 @@ return {
         config = { extra = { pow_bonus = 0, pow_rate = 0.1, animate = false } },
         update = function(self, card, dt)
             if not G.jokers then return end
-            local should_animate = not card.ability.extra.animate
-                and to_big(G.ARGS.score_intensity.earned_score) > to_big(G.ARGS.score_intensity.required_score)
-                and to_big(G.ARGS.score_intensity.required_score) > to_big(0)
+            local should_animate = not card.ability.extra.animate and MadLib.score_on_fire()
             if should_animate then
                 card.ability.extra.animate = true
                 juice_card_until(card, function () return card.ability.extra.animate end)
@@ -39,7 +37,7 @@ return {
                 return { pow = card.ability.extra.pow_bonus }
             end
             if not context.blueprint and context.after and context.cardarea == G.jokers then
-                if to_big(hand_chips ^ pow * mult) > to_big(G.GAME.blind.chips) then
+                if MadLib.score_beats_blind() and MadLib.score_on_fire() then
                     card.ability.extra.pow_bonus = card.ability.extra.pow_bonus + card.ability.extra.pow_rate
                     card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Power Up!", colour = G.C.POW })
                     MadLib.event({

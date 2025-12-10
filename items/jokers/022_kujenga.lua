@@ -47,11 +47,7 @@ return {
                 end
             end
 
-            -- Get the mult, but increase likelihood of toppling by 1
-            if
-                context.joker_main
-                and to_big(card.ability.extra.mult) > to_big(0)
-            then
+            if context.joker_main and MadLib.is_positive_number(card.ability.extra.mult) then
                 card.ability.immutable.increase = MadLib.clamp(card.ability.immutable.increase + 1, 0, card.ability.immutable.odds)
                 return { mult = to_big(card.ability.extra.mult) }
             end

@@ -14,7 +14,7 @@ return {
             if
                 (context.final_scoring_step
                 and G.GAME.current_round.hands_left == 0
-                and to_big(G.GAME.chips) < to_big(G.GAME.blind.chips))
+                and not MadLib.score_beats_blind())
                 or context.forcetrigger
             then
                 card.ability.active = not context.forcetrigger -- false means you can keep using it, woo!

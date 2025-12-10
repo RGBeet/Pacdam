@@ -1,5 +1,5 @@
 function Pacdam.Funcs.calculate_broker_rate(pow_rate, dollar_rate)
-    return math.floor(to_big(G.GAME.dollars) / to_big(dollar_rate)) * to_big(pow_rate)
+    return math.floor(MadLib.multiply(MadLib.divide(G.GAME.dollars, dollar_rate), pow_rate))
 end
 
 return {

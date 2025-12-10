@@ -18,9 +18,7 @@ return {
         end,
         calculate = function(self, card, context)
             if context.joker_main then
-                return {
-                    pow = card.ability.extra.pow
-                }
+                return { pow = card.ability.extra.pow }
             end
         end,
         calc_dollar_bonus = function(self, card)
