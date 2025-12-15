@@ -18,7 +18,9 @@ return {
                 number_format(card.ability.extra.max_money))
         end,
         calculate = function(self, card, context)
-            
+            if context.joker_main or context.forcetrigger then
+                return { x_pow   = lenient_bignum(card.ability.extra.x_pow) }
+            end
         end,
     }
 }

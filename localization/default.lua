@@ -335,7 +335,7 @@ return {
             j_rgpd_wanted_poster = {
                 name = "Wanted Poster",
                 text = {
-                    "If a {C:attention}#1{} of {V:1}#2#",
+                    "If a {C:attention}#1#{} of {V:1}#2#",
                     "is scored, {C:red}destroy{} it",
                     "and earn {C:money}$#3#",
                     "{C:inactive,s:0.8}Rank and suit change each round"
@@ -493,8 +493,7 @@ return {
         v_dictionary = {
             a_pow = "+#1# Pow",
             a_pow_minus = "-#1# Pow",
-            a_xpow = "X#1# Pow",
-            a_xpow_minus = "-X#1# Pow",
+            x_pow = "X#1# Pow",
             a_decay = "Decay",
         }
     }

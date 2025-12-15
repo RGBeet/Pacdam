@@ -76,6 +76,11 @@ SMODS.Sound{
 }
 
 SMODS.Sound{
+    key = "pow_reset",
+    path = "pow_reset.ogg"
+}
+
+SMODS.Sound{
     key = "xpow_hit",
     path = "xpow_hit.ogg"
 }
@@ -137,8 +142,9 @@ SMODS.Scoring_Parameters.pow = {
     default_value = 1,
     colour = G.C.UI_POW,
 	lick = {1, 1, 1, 1},
-    calculation_keys = {'pow', 'h_pow', 'pow_mod',},
+    calculation_keys = {'pow', 'h_pow', 'pow_mod', 'xpow', 'x_pow', 'Xpow_mod',},
     calc_effect = function(self, effect, scored_card, key, amount, from_edition)
+        if not SMODS.Calculation_Controls.pow then return end
         if (key == 'pow' or key == 'h_pow' or key == 'pow_mod') and amount then
             if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
             self:modify(amount)
@@ -147,10 +153,28 @@ SMODS.Scoring_Parameters.pow = {
                     card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_pow' or 'a_pow_minus', vars = {amount}}, pow_mod = amount, colour = G.C.EDITION, edition = true})
                 else
                     if key ~= 'pow_mod' then
-                        if effect.pow_message then
+                        if effect.chip_message then
                             card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.pow_message)
                         else
                             card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'pow', amount, percent)
+                        end
+                    end
+                end
+            end
+            return true
+        end
+        if (key == 'x_pow' or key == 'xpow' or key == 'Xpow_mod') and amount ~= 1 then
+            if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+            self:modify(pow * (amount - 1))
+            if not effect.remove_default_message then
+                if from_edition then
+                    card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type='variable',key= 'x_pow',vars={amount}}, Xpow_mod = amount, colour =  G.C.EDITION, edition = true})
+                else
+                    if key ~= 'Xchip_mod' then
+                        if effect.xchip_message then
+                            card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.xpow_message)
+                        else
+                            card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'x_pow', amount, percent)
                         end
                     end
                 end
@@ -353,14 +377,40 @@ SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "x_pow"
 SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "xpow_mod"
 SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "xpow_decay"
 
-
-
 function Pacdam.Funcs.xpow(pow,amt)
-    return 1 + ((pow - 1) * amt)
+    return MadLib.add(pow, MadLib.multiply(MadLib.subtract(pow, 1), amt))
 end
 
 function Pacdam.Funcs.epow(pow,amt)
-    return pow > 1 and (1+ (((pow-1)*100)^amt)/100) or (pow ^ amt)
+    if MadLib.is_positive_number(MadLib.subtract(pow, 1)) then
+        return MadLib.add(1, MadLib.divide(MadLib.exponent(MadLib.multiply(MadLib.subtract(pow, 1), 100), amt), 100))
+    else
+        return MadLib.exponent(pow, amt)
+    end
+    --return pow > 1 and (1+ (((pow-1)*100)^amt)/100) or (pow ^ amt)
+end
+
+function Pacdam.Funcs.convert_pow()
+    -- Convert Pow
+    if not MadLib.is_zero(MadLib.subtract(pow, 1)) then
+        local new_chips = mod_chips(MadLib.exponent(hand_chips, pow))
+        
+        MadLib.event({
+            trigger = 'before',
+            delay = 2.0,
+            func = function()
+                play_sound('timpani', 1.2, 0.6)
+                hand_chips = new_chips
+                pow = 1
+                return true
+            end
+        })
+        update_hand_text({sound = 'rgpd_pow_reset', volume = 0.7, pitch = 0.8, delay = 2.0}, {
+            chips 		= new_chips,
+            mult 		= mult,
+            pow         = 1
+        })
+    end
 end
 
 -- function to get perma_pow from playing_cards
@@ -388,10 +438,11 @@ end
 
 -- hook for allowing jokers to return pow in their calculate functions
 local calculate_individual_effect_ref = SMODS.calculate_individual_effect
+
 SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, from_edition)
     if (key == 'pow' or key == 'h_pow' or key == 'pow_mod' or key == 'pow_decay') and amount then
         if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
-        pow = pow + amount
+        pow = MadLib.add(pow, amount)
         update_hand_text({delay = 0}, {chips = hand_chips, mult = mult, pow = pow})
         if not effect.remove_default_message then
             if from_edition then
@@ -408,15 +459,15 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
         end
         return true
     end
-    if (key == 'xpow' or key == 'h_xpow' or key == 'xpow_mod' or key == 'xpow_decay') and amount then
+    if (key == 'x_pow' or key == 'xpow' or key == 'h_xpow' or key == 'xpow_mod') and amount then
         if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
-        pow = 1 + (pow - 1) * amount
-        update_hand_text({delay = 0}, {chips = hand_chips, mult = mult, pow = pow})
+        pow = Pacdam.Funcs.xpow(pow, amount)
+        update_hand_text({delay = 0}, {chips = hand_chips, mult = mult, pow = SMODS.Scoring_Parameters.pow})
         if not effect.remove_default_message then
             if from_edition then
                 card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = localize{type = 'variable', key = amount > 0 and 'a_xpow' or 'a_xpow_minus', vars = {amount}}, chip_mod = amount, colour = G.C.EDITION, edition = true})
             else
-                if key ~= 'pow_mod' then
+                if key ~= 'xpow_mod' then
                     if effect.pow_message then
                         card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.pow_message)
                     else
@@ -669,9 +720,35 @@ Pacdam.Directories = {
 }
 loop_directories(Pacdam.Directories)
 
+--[[
 local get_full_score_mod = MadLib.get_full_score
 
 MadLib.get_full_score = function(hand_chips, mult, pow)
     tell(tostring(hand_chips) .. ' ^ ' .. tostring(pow) .. ' is ' .. tostring(hand_chips^pow) .. '.')
     return get_full_score_mod(hand_chips^pow, mult)
 end
+]]
+
+-- Used to get the final score (before post-scoring shenanigans!)
+local calc_round_score_ref = SMODS.calculate_round_score
+function SMODS.calculate_round_score(flames)
+    local ret = calc_round_score_ref(flames)
+    return ret
+end
+
+SMODS.Scoring_Calculation({
+    key = 'pow',
+    func = function(self, chips, mult, flames)
+        print('POW!!1')
+        return (chips ^ pow) * mult
+    end
+})
+
+
+--[[
+    Because Pacdam doesn't have individual folders, we're adding
+    JokerDisplay stuff here!
+]]
+if JokerDisplay then
+local jod = JokerDisplay.Definitions
+tell("LOADING JOKERDISPLAY VALUES FOR PACDAM")

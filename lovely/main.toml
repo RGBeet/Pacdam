@@ -101,3 +101,13 @@ G.E_MANAGER:add_event(Event({
 	end)
 }))'''
 match_indent = true
+
+
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "local glass_shattered = {}"
+position = "before"
+payload = "Pacdam.Funcs.convert_pow()"
+match_indent = true
