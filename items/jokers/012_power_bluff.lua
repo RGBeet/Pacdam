@@ -6,9 +6,9 @@ return {
         pos     = MLIB.coords(1,5),
         rarity  = 2,
         cost    = 7,
-        config =  { extra = { pow = 0.05, mult = 15 } },
+        config =  { extra = { pow = 0.05 } },
         loc_vars = function(self, info_queue, card)
-            return MadLib.collect_vars(number_format(card.ability.extra.pow), number_format(card.ability.extra.mult))
+            return MadLib.collect_vars(number_format(card.ability.extra.pow))
         end,
         calculate = function(self, card, context)
             if context.setting_blind then
@@ -22,7 +22,6 @@ return {
             if context.joker_main or context.forcetrigger then
                 return { 
                     pow     = card.ability.extra.pow,
-                    mult    = -card.ability.extra.mult,
                 }
             end
         end,

@@ -21,9 +21,7 @@ return {
                     G.CONTROLLER.locks[lock] = nil
                     return true
                 end)
-                for i = 1, math.random(1,3) do
-                    Pacdam.do_fish(nil)
-                end
+                for i = 1, math.random(1,3) do Pacdam.Funcs.do_fish() end
                 tag.triggered = true
             return true
             end

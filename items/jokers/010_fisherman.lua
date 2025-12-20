@@ -57,9 +57,7 @@ return {
             info_queue[#info_queue + 1] = G.P_CENTERS.c_rgpd_fish
         end,
         calculate = function(self, card, context)
-            if context.pre_discard then
-                Pacdam.do_fish(card)
-            end
+            if context.pre_discard then Pacdam.Funcs.do_fish(card) end
         end,
         demicoloncompat = true,
     }

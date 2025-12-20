@@ -1,3 +1,23 @@
+Pacdam.Funcs.spawn_lich_joker = function(card)
+    local jokers = {}
+    for _, key in pairs(get_current_pool("Joker")) do
+        local center = G.P_CENTERS[key]
+        if 
+            key ~= "j_rgpd_lich" 
+            and key ~= "UNAVAILABLE"
+        then
+            jokers[#jokers+1] = center
+        end
+    end
+    local joker_center = pseudorandom_element(jokers, pseudoseed('lich'))
+    local joker = create_card('Joker', G.jokers, nil, nil, true, nil, joker_center.key, 'lich')
+    joker:set_edition('e_negative', true)
+    SMODS.Stickers['rgpd_tethered']:apply(joker, true)
+    joker.ability.lich_id = card.ability.extra.lich_id
+    card.area:emplace(joker)
+    return joker
+end
+
 return {
     data = {
         object_type = "Joker",
@@ -10,7 +30,7 @@ return {
         loc_vars = function(self, info_queue, card)
             info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
             info_queue[#info_queue + 1] = {
-                key = "pow_tethered",
+                key = "rgpd_tethered",
                 set = "Other",
                 vars = {  colours = { G.C.TETHERED } }
             }
@@ -19,16 +39,14 @@ return {
             }
         end,
         calculate = function(self, card, context)
-            if not context.blueprint and context.end_of_round and context.cardarea == G.jokers and G.GAME.blind.boss then
+            if 
+                not context.blueprint 
+                and context.end_of_round 
+                and context.cardarea == G.jokers 
+                and G.GAME.blind.boss 
+            then
                 play_sound("timpani")
-                local pool, pool_key = get_current_pool("Joker", nil, nil, nil)
-                local joker_key
-                repeat joker_key = pseudorandom_element(pool, pseudoseed(pool_key))
-                until G.P_CENTERS[joker_key].eternal_compat and joker_key ~= "j_rgpd_lich"
-                local new_card = SMODS.add_card({ key = joker_key })
-                new_card:set_edition('e_negative', true)
-                SMODS.Stickers['pow_tethered']:apply(new_card, true)
-                new_card.ability.lich_id = card.ability.extra.lich_id
+                Pacdam.Funcs.spawn_lich_joker(card)
             end
         end,
         add_to_deck = function (self, card, from_debuff)
@@ -42,7 +60,7 @@ return {
                 MadLib.loop_func(G.jokers.cards, function(v)
                     if v.ability.lich_id and v.ability.lich_id == card.ability.extra.lich_id then
                         v:remove_sticker("rgpd_tethered")
-                        SMODS.debuff_card(v, true, "Countess")
+                        SMODS.debuff_card(v, true, "lich")
                     end
                 end)
             end

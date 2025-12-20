@@ -77,9 +77,6 @@ return {
                         colour  = G.C.FILTER
                     }
                 end
-
-                MadLib.loop_func(card.area.cards, function(v,i)
-                end)
             end
 
             if context.round_eval then

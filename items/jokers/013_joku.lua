@@ -33,7 +33,7 @@ return {
             return MadLib.collect_vars(number_format(card.ability.extra.pow_rate), number_format(card.ability.extra.pow_bonus))
         end,
         calculate = function(self, card, context)
-            if context.joker_main then
+            if context.joker_main and MadLib.is_positive_number(card.ability.extra.pow_bonus) then
                 return { pow = card.ability.extra.pow_bonus }
             end
             if not context.blueprint and context.after and context.cardarea == G.jokers then

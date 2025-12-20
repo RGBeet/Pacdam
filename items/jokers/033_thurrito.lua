@@ -23,11 +23,11 @@ return {
                 or context.forcetrigger 
             then  
                 return {
-                    xchips = card.ability.extra.x_chips,
-                    xmult = card.ability.extra.x_mult
+                    xchips  = card.ability.extra.x_chips,
+                    xmult   = card.ability.extra.x_mult,
+                    pow     = card.ability.extra.pow
                 }
             end
-            Madcap.Funcs.food_joker_round_end(card)
         end,
     }
 }

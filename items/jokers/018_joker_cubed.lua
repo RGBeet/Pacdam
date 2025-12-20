@@ -15,7 +15,7 @@ return {
                 local matches = MadLib.list_matches_one(MadLib.RankTypes['Square'], function(c)
                     return c == tostring(context.other_card:get_id())
                 end)
-                if matches then 
+                if matches or context.forcetrigger then 
                     return { pow = card.ability.extra.pow }
                 end
             end
