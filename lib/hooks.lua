@@ -129,7 +129,6 @@ function SMODS.GUI.hand_chips_container(scale)
     -- After the chips container, place the the ^ operator and the pow?
     local index = nil
     for i=1,#ret.nodes do
-        print(ret.nodes[i].config.id)
         if ret.nodes[i] and ret.nodes[i].config.id == 'hand_chips_container' then 
             index = i 
             break
