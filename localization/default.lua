@@ -478,7 +478,7 @@ return {
                     "Debuff this card and",
                     "remove {V:1}Tethered{} sticker"
                 }
-            }
+            },
         },
     },
     misc = {
